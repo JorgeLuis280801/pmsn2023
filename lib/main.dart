@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       valueListenable: GlobalValue.flagTheme,
       builder: (context, value, _) {
         return MaterialApp(
-          home: Product_det(),
+          home: LoginScreen(),
           routes: getRoutes(),
           theme: value ? StylesApp.dark_theme(context) : StylesApp.light_theme(context)
         );

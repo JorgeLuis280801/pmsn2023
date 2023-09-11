@@ -35,7 +35,9 @@ class _Product_detState extends State<Product_det> {
                 icon: const Icon(
                   Icons.arrow_back,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
             ],
           ),
