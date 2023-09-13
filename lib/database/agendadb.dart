@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pmsn2023/models/task_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 class AgendaDB {
@@ -33,8 +34,8 @@ class AgendaDB {
       id_Tarea INTEGER primary key,
       nom_Tarea VARCHAR(50),
       desc_Tarea VARCHAR(50),
-      sta_Tarea BYTE,
-    )''';
+      sta_Tarea BYTE
+    );''';
 
     db.execute(query);
   }
@@ -64,11 +65,13 @@ class AgendaDB {
 
   }
 
-  /*Future<List<?>> GETALLTASK() async{
+  Future<List<TaskModel>> GETALLTASK() async{
 
     var conexion = await database;
-    var result = conexion!.query('tblTareas');
+    var result = await conexion!.query('tblTareas');
 
-  }*/ 
+    return result.map((task) => TaskModel.fromMap(task)).toList();
+
+  } 
 
 }

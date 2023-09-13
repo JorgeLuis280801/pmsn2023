@@ -37,12 +37,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
             accountEmail: Text('jorgeluis280801@gmail.com')
             ),
             ListTile(
-              leading: Image.network('https://www.verstappen.com/img/thumb/thumb.php?src=/img/product/481_ea2db20_12202101_Front_1.png'),
+              leading: Image.network('https://cdn3.iconfinder.com/data/icons/circle-f1/512/F1_1-256.png'),
               trailing: Image.network('https://cutewallpaper.org/24/modern-arrow-png/download-red-arrow-free-png-transparent-image-and-clipart.png'),
               title: Text('Mercancia'),
               subtitle: Text('Vistete con los colores de tu equipo!'),
               onTap: () {
                 Navigator.pushNamed(context, '/prod_det');
+              },
+            ),
+            ListTile(
+              leading: Image.network('https://cdn3.iconfinder.com/data/icons/circle-f1/512/F1_19-256.png'),
+              trailing: Image.network('https://cutewallpaper.org/24/modern-arrow-png/download-red-arrow-free-png-transparent-image-and-clipart.png'),
+              title: Text('TaskScreen'),
+              subtitle: Text('BD de los pilotos'),
+              onTap: () {
+                Navigator.pushNamed(context, '/task');
               },
             ),
             DayNightSwitcher(
