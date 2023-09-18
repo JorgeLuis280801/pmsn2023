@@ -23,10 +23,10 @@ class _TaskScreenState extends State<TaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Task'),
+        title: const Text('Task manager'),
         actions: [
           IconButton(
-            onPressed: (){}, 
+            onPressed: ()=>Navigator.pushNamed(context, '/addT'), 
             icon: Icon(Icons.task))
         ],
       ),
