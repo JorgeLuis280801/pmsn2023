@@ -34,6 +34,8 @@ dependencies:
   carousel_slider: ^4.2.1
   sqflite: ^2.3.0
   path_provider: ^2.1.1
+  shared_preferences: ^2.2.1
+  get: ^4.6.6
   flutter:
     sdk: flutter
 

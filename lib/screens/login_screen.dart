@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,19 +15,34 @@ class _LoginScreenState extends State<LoginScreen> {
     TextEditingController txtconUser = TextEditingController();
     TextEditingController txtconPass = TextEditingController();
 
+    bool Marcado = true;
+
     final txtUser = TextField(
       controller: txtconUser,
       decoration: const InputDecoration(
-        border: OutlineInputBorder()
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.red)
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white)
+        ),
+        labelStyle: TextStyle(color: Colors.white),
+        hintStyle: TextStyle(color: Colors.white)
       ),
-      
     );
 
     final txtPass = TextField(
       controller: txtconPass,
       obscureText: true,
       decoration: const InputDecoration(
-        border: OutlineInputBorder()
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.red)
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white)
+        ),
+        labelStyle: TextStyle(color: Colors.white),
+        hintStyle: TextStyle(color: Colors.white)
       ),
     );
 
@@ -44,7 +60,9 @@ class _LoginScreenState extends State<LoginScreen> {
     final btnEntrar = FloatingActionButton.extended(
       icon: Icon(Icons.login),
       label: Text('Entrar'),
-      onPressed: (){
+      onPressed: () async {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool('Recuerdame', Marcado);
         Navigator.pushNamed(context, '/dash');
       }
       );
@@ -68,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 top: 200,
                 child: imgLogo),
               Container(
-                height: 200,
+                height: 250,
                 padding: const EdgeInsets.all(30),
                 margin: const EdgeInsets.symmetric(horizontal: 30),
                 decoration:  BoxDecoration(
@@ -79,7 +97,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [  
                     txtUser,
                     const SizedBox(height: 10),
-                    txtPass
+                    txtPass,
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: Marcado,
+                          onChanged: (bool? value){
+                            setState(() {
+                              Marcado = value ?? true;
+                            });
+                          }),
+                          const Text('Recuerdame',
+                          style: TextStyle(color: Colors.white),)
+                      ],
+                    )
                   ],
                 ),
               ),

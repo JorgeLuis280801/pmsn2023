@@ -1,9 +1,14 @@
+import 'dart:async';
+
 import 'package:concentric_transition/concentric_transition.dart';
 import 'package:day_night_switcher/day_night_switcher.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pmsn2023/assets/global_values.dart';
+import 'package:pmsn2023/screens/login_screen.dart';
 import 'package:pmsn2023/screens/tarjetas.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardScreen extends StatefulWidget {
   DashboardScreen({super.key});
@@ -33,7 +38,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             currentAccountPicture: CircleAvatar(
               backgroundImage: NetworkImage('https://www.shareicon.net/data/512x512/2016/06/30/788937_people_512x512.png'),
             ),
-            accountName: Text('Georgy'), 
+            accountName: Text('Georgy28'),
             accountEmail: Text('jorgeluis280801@gmail.com')
             ),
             ListTile(
@@ -56,10 +61,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             DayNightSwitcher(
               isDarkModeEnabled: GlobalValue.flagTheme.value,
-              onStateChanged: (isDarkModeEnabled) {
+              onStateChanged: (isDarkModeEnabled) async {
+                final SharedPreferences pref = await SharedPreferences.getInstance();
                 GlobalValue.flagTheme.value = isDarkModeEnabled;
+                pref.setBool('theme', isDarkModeEnabled);
               },
             ),
+            MaterialButton(
+              color: Color.fromARGB(255, 139, 0, 0),
+              child: const Text('Cerrar sesion',
+                     style: TextStyle(color: Colors.white),),
+              onPressed: () async{
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.remove('Recuerdame');
+                prefs.remove('theme');
+                Navigator.pushNamed(context, '/login');
+              },
+            )
         ],
       ),
     );

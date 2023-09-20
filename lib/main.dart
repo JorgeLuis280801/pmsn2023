@@ -7,19 +7,43 @@ import 'package:pmsn2023/assets/styles_app.dart';
 import 'package:pmsn2023/routes.dart';
 import 'package:pmsn2023/screens/login_screen.dart';
 import 'package:pmsn2023/screens/product_detail.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() => runApp( MyApp());
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  bool theme = prefs.getBool('theme') ?? false;
+
+  bool remember = prefs.getBool('Recuerdame') ?? false;
+
+  runApp(MyApp(
+    theme: theme,
+    remember: remember,
+  ));
+
+}
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key, required this.theme, required this.remember});
+
+  final bool theme;
+  final bool remember;
+
+  bool valusr = false;
 
   @override
   Widget build(BuildContext context) {
+
+    GlobalValue.flagTheme.value = theme;
+
     return ValueListenableBuilder(
       valueListenable: GlobalValue.flagTheme,
+      
       builder: (context, value, _) {
         return MaterialApp(
-          home: LoginScreen(),
+          initialRoute: remember ? '/dash' : '/login',
           routes: getRoutes(),
           theme: value ? StylesApp.dark_theme(context) : StylesApp.light_theme(context)
         );
