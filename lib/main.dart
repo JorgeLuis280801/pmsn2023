@@ -31,8 +31,6 @@ class MyApp extends StatelessWidget {
   final bool theme;
   final bool remember;
 
-  bool valusr = false;
-
   @override
   Widget build(BuildContext context) {
 
