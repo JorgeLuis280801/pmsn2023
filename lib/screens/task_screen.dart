@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn2023/database/agendadb.dart';
 import 'package:pmsn2023/models/task_model.dart';
+import 'package:pmsn2023/widgets/CardTaskWidget.dart';
 
 class TaskScreen extends StatefulWidget {
   const TaskScreen({super.key});
@@ -35,9 +36,10 @@ class _TaskScreenState extends State<TaskScreen> {
         builder: (BuildContext contex, AsyncSnapshot<List<TaskModel>> snapshot){
           if (snapshot.hasData) {
             return ListView.builder(
-              itemCount: 1, //snapshot.data!.length,
+              itemCount: snapshot.data!.length,
               itemBuilder: (BuildContext context, int  index){
-                return Text('Estoy cansado gfe :c');
+                return CardTaskWidget(
+                  taskModel: snapshot.data![index]);
               }
             );
           } else {
