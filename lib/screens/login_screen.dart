@@ -79,14 +79,16 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         child: Padding(
           padding: const EdgeInsets.only(bottom: 100.0),
-          child: Stack(
+          child: 
+          Stack(
             alignment: Alignment.bottomCenter,
             children: [
               Positioned(
                 top: 200,
-                child: imgLogo),
+                child: 
+                imgLogo,),
               Container(
-                height: 250,
+                height: 246,
                 padding: const EdgeInsets.all(30),
                 margin: const EdgeInsets.symmetric(horizontal: 30),
                 decoration:  BoxDecoration(
@@ -102,14 +104,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     Row(
                       children: [
                         Checkbox(
-                          value: Marcado,
-                          onChanged: (bool? value){
-                            setState(() {
-                              Marcado = value ?? true;
-                            });
-                          }),
-                          const Text('Recuerdame',
-                          style: TextStyle(color: Colors.white),)
+                          value: Marcado, 
+                          onChanged: (isMarcado) {
+                            Marcado = isMarcado ?? true;
+                          }
+                        ),
+                        const Text('Recuerdame',
+                        style: TextStyle(color: Colors.white),
+                        )
                       ],
                     )
                   ],
@@ -117,9 +119,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ],
           ),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        ),              
+      ),     
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: btnEntrar,
     );
   }

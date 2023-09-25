@@ -110,9 +110,9 @@ class ConcentricPage extends StatelessWidget {
       title: "Consigue mercancia de tu equipo favorito!", 
       subtitle: "Playeras, sudaderas, cascos, etc....", 
       image: AssetImage('assets/images/P3.jpg'),
-      backgroundColor: Color.fromARGB(255, 255, 0, 0), 
-      titleColor: Color.fromARGB(255, 234, 255, 0), 
-      subtitleColor: Color.fromARGB(251, 0, 0, 0),
+      backgroundColor: Color.fromARGB(255, 50, 135, 215), 
+      titleColor: Color.fromARGB(255, 252, 172, 255), 
+      subtitleColor: Color.fromARGB(249, 0, 0, 0),
       background: LottieBuilder.asset("assets/animations/AP3.json"),
       ),
   ];

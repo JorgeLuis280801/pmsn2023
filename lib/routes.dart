@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:pmsn2023/screens/add_task.dart';
+import 'package:pmsn2023/screens/checkbox.dart';
 import 'package:pmsn2023/screens/dashboard_screen.dart';
 import 'package:pmsn2023/screens/login_screen.dart';
 import 'package:pmsn2023/screens/product_detail.dart';
@@ -11,6 +12,7 @@ Map<String,WidgetBuilder> getRoutes(){
     '/prod_det' : (BuildContext context) => Product_det(),
     '/task' : (BuildContext context) => TaskScreen(),
     '/addT' : (BuildContext context) => AddTask(),
-    '/login' : (BuildContext context) => LoginScreen()
+    '/login' : (BuildContext context) => LoginScreen(),
+    '/c' : (BuildContext context) => checkbox()
   };
 }

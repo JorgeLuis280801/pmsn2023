@@ -74,6 +74,7 @@ class _AddTaskState extends State<AddTask> {
           var msj = ( value > 0 ) ? 'Insercion exitosa' : 'Insercion fallida';
           var snackbar = SnackBar(content: Text(msj));
           ScaffoldMessenger.of(context).showSnackBar(snackbar);
+          Navigator.pop(context);
         });
       }, 
       child: Text("Guardar Tarea")
