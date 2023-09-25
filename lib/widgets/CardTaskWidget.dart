@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pmsn2023/assets/global_values.dart';
 import 'package:pmsn2023/database/agendadb.dart';
 import 'package:pmsn2023/models/task_model.dart';
+import 'package:pmsn2023/screens/add_task.dart';
 
-class CardTaskWidget extends StatefulWidget {
+class CardTaskWidget extends StatelessWidget {
   CardTaskWidget(
     {
       super.key, required this.taskModel, this.agendaDB
@@ -13,11 +14,6 @@ class CardTaskWidget extends StatefulWidget {
   TaskModel taskModel;
   AgendaDB? agendaDB;
 
-  @override
-  State<CardTaskWidget> createState() => _CardTaskWidgetState();
-}
-
-class _CardTaskWidgetState extends State<CardTaskWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -30,9 +26,9 @@ class _CardTaskWidgetState extends State<CardTaskWidget> {
         children: [
           Column(
             children: [
-              Text(widget.taskModel.nom_Tarea!,
+              Text(taskModel.nom_Tarea!,
               style: const TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 251, 127), fontSize: 16)),
-              Text(widget.taskModel.desc_tarea!,
+              Text(taskModel.desc_tarea!,
               style: const TextStyle(color: Colors.white)),
             ],
           ),
@@ -40,7 +36,13 @@ class _CardTaskWidgetState extends State<CardTaskWidget> {
           Column(
             children: [
               GestureDetector(
-                onTap: (){},
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: 
+                    (context) => AddTask(taskModel: taskModel,)
+                  )
+                ),
                 child: Image.asset('assets/images/P2.jpg', height: 40)
               ),
               IconButton(
@@ -54,7 +56,7 @@ class _CardTaskWidgetState extends State<CardTaskWidget> {
                         actions: [
                           TextButton(
                             onPressed: (){
-                              widget.agendaDB!.DELETE('tblTareas', widget.taskModel.id_Tarea!)
+                              agendaDB!.DELETE('tblTareas', taskModel.id_Tarea!)
                               .then((value) {
                                 Navigator.pop(context);
                                 GlobalValue.flagTarea.value = !GlobalValue.flagTarea.value;
@@ -66,7 +68,7 @@ class _CardTaskWidgetState extends State<CardTaskWidget> {
                           TextButton(
                             onPressed: ()=>Navigator.pop(context), 
                             child: const Text('Cancelar',
-                            style: TextStyle(color: Color.fromARGB(255, 177, 0, 0)),)
+                            style: TextStyle(color: Color.fromARGB(255, 222, 0, 0)),)
                           ),
                         ],
                       );

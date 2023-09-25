@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn2023/database/agendadb.dart';
+import 'package:pmsn2023/models/task_model.dart';
 
 class AddTask extends StatefulWidget {
-  const AddTask({super.key});
+  AddTask({super.key, this.taskModel});
+
+  TaskModel? taskModel;
 
   @override
   State<AddTask> createState() => _AddTaskState();
@@ -10,7 +13,7 @@ class AddTask extends StatefulWidget {
 
 class _AddTaskState extends State<AddTask> {
 
-  String dropDownValue = "Pendiente";
+  String? dropDownValue = "Pendiente";
 
   TextEditingController txtConNomT = TextEditingController();
   TextEditingController txtConDescT = TextEditingController();
@@ -27,6 +30,24 @@ class _AddTaskState extends State<AddTask> {
     // TODO: implement initState
     super.initState();
     agendaDB = AgendaDB();
+
+    if (widget.taskModel != null) {
+      
+      txtConNomT.text = widget.taskModel!.nom_Tarea!;
+      txtConDescT.text = widget.taskModel!.desc_tarea!; 
+
+      switch (widget.taskModel!.sta_Tarea) {
+        case 'R':
+          dropDownValue = "Realizando";
+          break;
+        case 'C':
+          dropDownValue = "Concluida";
+          break;
+        case 'P':
+          dropDownValue = "Pendiente";
+      }
+    }
+
   }
 
   @override
@@ -69,7 +90,7 @@ class _AddTaskState extends State<AddTask> {
         agendaDB!.INSERT('tblTareas', {
           'nom_Tarea' : txtConNomT.text,
           'desc_Tarea' : txtConDescT.text,
-          'sta_Tarea' : dropDownValue.substring(1,1)
+          'sta_Tarea' : dropDownValue!.substring(0,1)
         }).then((value){
           var msj = ( value > 0 ) ? 'Insercion exitosa' : 'Insercion fallida';
           var snackbar = SnackBar(content: Text(msj));
@@ -82,7 +103,9 @@ class _AddTaskState extends State<AddTask> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Añadir tarea"),
+        title: widget.taskModel == null 
+        ? const Text("Añadir tarea")
+        : const Text("Editar tarea"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
