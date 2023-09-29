@@ -58,8 +58,8 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   
     final btnEntrar = FloatingActionButton.extended(
-      icon: Icon(Icons.login),
-      label: Text('Entrar'),
+      icon: const Icon(Icons.login),
+      label: const Text('Entrar'),
       onPressed: () async {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setBool('Recuerdame', Marcado);
@@ -93,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 margin: const EdgeInsets.symmetric(horizontal: 30),
                 decoration:  BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Color.fromARGB(255, 4, 2, 17),
+                  color: const Color.fromARGB(255, 4, 2, 17),
                 ),
                 child: Column(
                   children: [  
@@ -106,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Checkbox(
                           value: Marcado, 
                           onChanged: (isMarcado) {
-                            Marcado = isMarcado ?? true;
+                            Marcado = isMarcado ?? false;
                           }
                         ),
                         const Text('Recuerdame',

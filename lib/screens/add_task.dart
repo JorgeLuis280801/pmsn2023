@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pmsn2023/assets/global_values.dart';
 import 'package:pmsn2023/database/agendadb.dart';
 import 'package:pmsn2023/models/task_model.dart';
 
@@ -87,7 +88,8 @@ class _AddTaskState extends State<AddTask> {
   final ElevatedButton btnGuardar =
     ElevatedButton(
       onPressed: (){
-        agendaDB!.INSERT('tblTareas', {
+        if( widget.taskModel == null){
+          agendaDB!.INSERT('tblTareas', {
           'nom_Tarea' : txtConNomT.text,
           'desc_Tarea' : txtConDescT.text,
           'sta_Tarea' : dropDownValue!.substring(0,1)
@@ -97,6 +99,22 @@ class _AddTaskState extends State<AddTask> {
           ScaffoldMessenger.of(context).showSnackBar(snackbar);
           Navigator.pop(context);
         });
+        }else{
+          AgendaDB()!.UPDATE('tblTareas', {
+            'id_Tarea' : widget.taskModel!.id_Tarea,
+            'nom_Tarea' : txtConNomT.text,
+            'desc_Tarea' : txtConDescT.text,
+            'sta_Tarea' : dropDownValue!.substring(0,1)
+          }).then((value) {
+            GlobalValue.flagTarea.value = !GlobalValue.flagTarea.value;
+            var msj = ( value > 0 ) 
+            ? 'Actualizacion exitosa' 
+            : 'Error en la actualizacion';
+            var snackbar = SnackBar(content: Text(msj));
+            ScaffoldMessenger.of(context).showSnackBar(snackbar);
+            Navigator.pop(context);
+          });
+        }
       }, 
       child: Text("Guardar Tarea")
   );
