@@ -7,6 +7,7 @@ class StylesApp{
       colorScheme: Theme.of(context).colorScheme.copyWith(
         primary: Color.fromARGB(255, 164, 0, 0),
         secondary: Color.fromARGB(255, 164, 0, 0),
+        
       )
     );    
   }

@@ -9,13 +9,14 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  
+  bool? Marcado = false;
+  
   @override
   Widget build(BuildContext context) {
 
-    TextEditingController txtconUser = TextEditingController();
-    TextEditingController txtconPass = TextEditingController();
-
-    bool Marcado = true;
+    final txtconUser = TextEditingController();
+    final txtconPass = TextEditingController();
 
     final txtUser = TextField(
       controller: txtconUser,
@@ -26,9 +27,8 @@ class _LoginScreenState extends State<LoginScreen> {
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.white)
         ),
-        labelStyle: TextStyle(color: Colors.white),
-        hintStyle: TextStyle(color: Colors.white)
       ),
+      style: const TextStyle(color: Colors.white),
     );
 
     final txtPass = TextField(
@@ -41,9 +41,8 @@ class _LoginScreenState extends State<LoginScreen> {
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.white)
         ),
-        labelStyle: TextStyle(color: Colors.white),
-        hintStyle: TextStyle(color: Colors.white)
       ),
+      style: const TextStyle(color: Colors.white),
     );
 
     final imgLogo = Container(
@@ -62,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
       label: const Text('Entrar'),
       onPressed: () async {
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setBool('Recuerdame', Marcado);
+        prefs.setBool('Recuerdame', Marcado ?? false);
         Navigator.pushNamed(context, '/dash');
       }
       );
@@ -73,8 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
         decoration: const BoxDecoration(
         image: DecorationImage(
           fit: BoxFit.fill,
-          image: NetworkImage(
-            'https://www.hdwallpapers.in/download/black_pattern_red_white_4k_hd_abstract-720x1280.jpg')
+          image: AssetImage('assets/images/fondo.jpg')
             )
         ),
         child: Padding(
@@ -105,8 +103,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         Checkbox(
                           value: Marcado, 
-                          onChanged: (isMarcado) {
-                            Marcado = isMarcado ?? false;
+                          onChanged: (isMarcado) { 
+                            setState(() {
+                              Marcado = isMarcado;
+                            });
                           }
                         ),
                         const Text('Recuerdame',
