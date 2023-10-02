@@ -9,10 +9,8 @@ class Product_det extends StatefulWidget {
 }
 
 class _Product_detState extends State<Product_det> {
-  @override 
-  Widget build(BuildContext context) {
-
-    bool _isFavorited = true;
+  
+  bool _isFavorited = true;
 
     void _toggleFavorite() {
       setState(() {
@@ -20,6 +18,8 @@ class _Product_detState extends State<Product_det> {
       });
     }
 
+  @override 
+  Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(

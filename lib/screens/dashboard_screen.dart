@@ -56,7 +56,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               title: Text('TaskScreen'),
               subtitle: Text('BD de los pilotos'),
               onTap: () {
-                Navigator.pushNamed(context, '/task');
+                Navigator.pushNamed(context, '/popular');
               },
             ),
             DayNightSwitcher(

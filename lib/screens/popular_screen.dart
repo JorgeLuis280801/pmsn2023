@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pmsn2023/models/popular_model.dart';
 import 'package:pmsn2023/network/api_popular.dart';
+import 'package:pmsn2023/widgets/item_movie_widget.dart';
 
 class PopularScreen extends StatefulWidget {
   const PopularScreen({super.key});
@@ -26,8 +28,23 @@ class _PopularScreenState extends State<PopularScreen> {
       ),
       body: FutureBuilder(
         future: apiPopular!.getAllPopular(),
-        builder: (context, snapshot){
-          return const Text('Hola');
+        builder: (context, AsyncSnapshot<List<PopularModel>?> snapshot){
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return itemMovieWidget(snapshot.data![index]);
+              },
+            );
+          }else{
+            if (snapshot.hasError) {
+              return Center(
+                child: Text('Se murioooooo :,v'),
+              );
+            }else{
+              return CircularProgressIndicator();
+            }
+          }  
         }
       ),
     );
