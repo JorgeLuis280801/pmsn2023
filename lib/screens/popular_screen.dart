@@ -30,7 +30,14 @@ class _PopularScreenState extends State<PopularScreen> {
         future: apiPopular!.getAllPopular(),
         builder: (context, AsyncSnapshot<List<PopularModel>?> snapshot){
           if (snapshot.hasData) {
-            return ListView.builder(
+            return GridView.builder(
+              padding: const EdgeInsets.all(10),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: .9,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
                 return itemMovieWidget(snapshot.data![index]);
@@ -38,11 +45,11 @@ class _PopularScreenState extends State<PopularScreen> {
             );
           }else{
             if (snapshot.hasError) {
-              return Center(
+              return const Center(
                 child: Text('Se murioooooo :,v'),
               );
             }else{
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             }
           }  
         }
