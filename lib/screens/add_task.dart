@@ -100,7 +100,7 @@ class _AddTaskState extends State<AddTask> {
           Navigator.pop(context);
         });
         }else{
-          AgendaDB()!.UPDATE('tblTareas', {
+          AgendaDB()!.UPDATETar('tblTareas', {
             'id_Tarea' : widget.taskModel!.id_Tarea,
             'nom_Tarea' : txtConNomT.text,
             'desc_Tarea' : txtConDescT.text,

@@ -30,12 +30,30 @@ class AgendaDB {
 
   FutureOr<void> _createTables(Database db, int version) {
     
-    String query = '''CREATE TABLE tblTareas(
-      id_Tarea INTEGER primary key,
-      nom_Tarea VARCHAR(50),
-      desc_Tarea VARCHAR(50),
-      sta_Tarea BYTE
-    );''';
+    String query = '''CREATE TABLE tblCarrera(
+                        id_Carrera INTEGER primary key,
+                        nom_Carrera VARCHAR(50)
+                      );
+
+                      CREATE TABLE tblProfesor(
+                        id_Profe INTEGER primary key,
+                        nom_Profe VARCHAR(50),
+                        email VARCHAR(50),
+                        id_Carrea INTEGER,
+                        FOREIGN KEY (id_Profe) REFERENCES tblCarrera(id_Carrera)
+                      );
+
+                      CREATE TABLE tblTareas(
+                        id_Tarea INTEGER primary key,
+                        nom_tarea VARCHAR(50),
+                        fec_expiracion DATE,
+                        fec_Recordatorio DATE,
+                        desc_tarea TEXT,
+                        realizada INTEGER,
+                        id_Profe INTEGER,
+                        FOREIGN KEY (id_Profe) REFERENCES tblProfesor(id_Profe)
+                      );
+                      ''';
 
     db.execute(query);
   }
@@ -47,7 +65,7 @@ class AgendaDB {
 
   }
 
-    Future<int> UPDATE(String tblName, Map<String,dynamic> data) async {
+  Future<int> UPDATETar(String tblName, Map<String,dynamic> data) async {
     
     var conexion = await database;
     return conexion!.update(tblName, data, 
@@ -56,7 +74,25 @@ class AgendaDB {
 
   }
 
-  Future<int> DELETE(String tblName, int idTask) async {
+  Future<int> UPDATEProf(String tblName, Map<String,dynamic> data) async {
+    
+    var conexion = await database;
+    return conexion!.update(tblName, data, 
+      where: 'id_Profe = ?', 
+      whereArgs: [data['id_Profe']]);
+
+  }
+
+  Future<int> UPDATECarr(String tblName, Map<String,dynamic> data) async {
+    
+    var conexion = await database;
+    return conexion!.update(tblName, data, 
+      where: 'id_Carrera = ?', 
+      whereArgs: [data['id_Carrera']]);
+
+  }
+
+  Future<int> DELETETar(String tblName, int idTask) async {
     
     var conexion = await database;
     return conexion!.delete(tblName, 

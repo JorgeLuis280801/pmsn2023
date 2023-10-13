@@ -56,7 +56,7 @@ class CardTaskWidget extends StatelessWidget {
                         actions: [
                           TextButton(
                             onPressed: (){
-                              agendaDB!.DELETE('tblTareas', taskModel.id_Tarea!)
+                              agendaDB!.DELETETar('tblTareas', taskModel.id_Tarea!)
                               .then((value) {
                                 Navigator.pop(context);
                                 GlobalValue.flagTarea.value = !GlobalValue.flagTarea.value;
