@@ -104,6 +104,7 @@ class AgendaDB {
   Future<List<TaskModel>> GETALLTASK() async{
 
     var conexion = await database;
+    
     var result = await conexion!.query('tblTareas');
 
     return result.map((task) => TaskModel.fromMap(task)).toList();

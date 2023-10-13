@@ -4,9 +4,11 @@ import 'package:concentric_transition/concentric_transition.dart';
 import 'package:flutter/material.dart';
 import 'package:pmsn2023/assets/global_values.dart';
 import 'package:pmsn2023/assets/styles_app.dart';
+import 'package:pmsn2023/provider/test_provider.dart';
 import 'package:pmsn2023/routes.dart';
 import 'package:pmsn2023/screens/login_screen.dart';
 import 'package:pmsn2023/screens/product_detail.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async{
@@ -40,10 +42,13 @@ class MyApp extends StatelessWidget {
       valueListenable: GlobalValue.flagTheme,
       
       builder: (context, value, _) {
-        return MaterialApp(
-          initialRoute: remember ? '/dash' : '/login',
-          routes: getRoutes(),
-          theme: value ? StylesApp.dark_theme(context) : StylesApp.light_theme(context)
+        return ChangeNotifierProvider(
+          create: (context) => TestProvider(),
+          child: MaterialApp(
+            initialRoute: remember ? '/dash' : '/login',
+            routes: getRoutes(),
+            theme: value ? StylesApp.dark_theme(context) : StylesApp.light_theme(context)
+          ),
         );
       }
     );

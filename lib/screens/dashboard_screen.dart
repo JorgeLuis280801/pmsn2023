@@ -56,13 +56,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
               title: Text('TaskScreen'),
               subtitle: Text('BD de los pilotos'),
               onTap: () {
-                Navigator.pushNamed(context, '/task');
+                Navigator.pushNamed(context, '/prov');
               },
             ),
             ListTile(
               leading: Image.network('https://cdn3.iconfinder.com/data/icons/circle-education/512/Education_26-64.png'),
               trailing: Image.network('https://cutewallpaper.org/24/modern-arrow-png/download-red-arrow-free-png-transparent-image-and-clipart.png'),
-              title: Text('MOVIES'),
+              title: Text('Movies'),
               subtitle: Text('Consumo API'),
               onTap: () {
                 Navigator.pushNamed(context, '/popular');
