@@ -1,19 +1,17 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:pmsn2023/assets/global_values.dart';
 import 'package:pmsn2023/database/agendadb.dart';
-import 'package:pmsn2023/models/task_model.dart';
-import 'package:pmsn2023/screens/add_task.dart';
+import 'package:pmsn2023/models/profes_model.dart';
+import 'package:pmsn2023/screens/add_profes.dart';
 
-class CardTaskWidget extends StatelessWidget {
-  CardTaskWidget(
-    {
-      super.key, required this.taskModel, this.agendaDB
-    }
-  );
+class CardProfesWidget extends StatelessWidget {
+  CardProfesWidget({
+    super.key,
+    required this.profesModel,
+    this.agendaDB
+  });
 
-  TaskModel taskModel;
+  ProfesModel profesModel;
   AgendaDB? agendaDB;
 
   @override
@@ -28,20 +26,10 @@ class CardTaskWidget extends StatelessWidget {
         children: [
           Column(
             children: [
-              Text(taskModel.nom_tarea!,
+              Text(profesModel.nom_Profe!,
               style: const TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 251, 127), fontSize: 16)),
-              Text(taskModel.fec_expiracion!,
+              Text(profesModel.email!,
               style: const TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 251, 127), fontSize: 16)),
-              Text(taskModel.fec_recordatorio!,
-              style: const TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 251, 127), fontSize: 16)),
-              Text(taskModel.desc_tarea!,
-              style: const TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 251, 127), fontSize: 16)),
-              Checkbox(
-                value: taskModel.realizada == 0
-                  ? false
-                  : true, 
-                onChanged: (isHecho){}
-              )
             ],
           ),
           Expanded(child: Container()),
@@ -52,7 +40,7 @@ class CardTaskWidget extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: 
-                    (context) => AddTask(taskModel: taskModel,)
+                    (context) => AddProfes(profesModel: profesModel,)
                   )
                 ),
                 child: Image.asset('assets/images/P2.jpg', height: 40)
@@ -64,14 +52,14 @@ class CardTaskWidget extends StatelessWidget {
                     builder: (context){
                       return AlertDialog(
                         title: const Text("Confirmacion de borrado!!"),
-                        content: const Text("Estas seguro de querer borrar esta tarea?"),
+                        content: const Text("Estas seguro de querer borrar este profesor?"),
                         actions: [
                           TextButton(
                             onPressed: (){
-                              agendaDB!.DELETETar('tblTareas', taskModel.id_Tarea!)
+                              agendaDB!.DELETEProf('tblProfesor', profesModel.id_Profe!)
                               .then((value) {
                                 Navigator.pop(context);
-                                GlobalValue.flagTarea.value = !GlobalValue.flagTarea.value;
+                                GlobalValue.flagProfes.value = !GlobalValue.flagProfes.value;
                               });
                             }, 
                             child: const Text('Borrar',

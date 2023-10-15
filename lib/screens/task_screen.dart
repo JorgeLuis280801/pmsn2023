@@ -15,6 +15,18 @@ class _TaskScreenState extends State<TaskScreen> {
 
   AgendaDB? agendaDB;
 
+  String estado = "Todas";
+
+  List <String> estadovalues = [
+    'Todas',
+    'Completadas',
+    'Pendientes'
+  ];
+
+  List <TaskModel> tareas = [];
+
+  TextEditingController txtconFiltroT = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -23,10 +35,51 @@ class _TaskScreenState extends State<TaskScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+  final txtFiltroT = TextField(
+    decoration: const InputDecoration(
+        label: Text('Indique el nombre de la tarea', style: TextStyle(color: Colors.white),),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 255, 255, 255))
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0))
+        ),
+    ),
+    controller: txtconFiltroT,
+  );
+
+  final btnFiltro = ElevatedButton(
+    onPressed: (){setState(() {
+      
+    });}, 
+    child: Text('Buscar'),
+    style: ButtonStyle(
+    backgroundColor: MaterialStateProperty.all<Color>(const Color.fromARGB(255, 30, 109, 174))
+  ),
+  );
+
+  final DropdownButton ddEstado = DropdownButton(
+    value: estado,
+    items: estadovalues.map((status) => DropdownMenuItem(
+      value: status,
+      child: Text(status.toString()))
+    ).toList(), 
+    onChanged: (newEstado) {
+      setState(() {
+        estado = newEstado!;
+        actEstado();
+        GlobalValue.flagTarea.value = !GlobalValue.flagTarea.value;
+      });
+    }
+  );
+  
     return Scaffold(
       appBar: AppBar(
         title: const Text('Task manager'),
         actions: [
+          btnFiltro,
+          ddEstado,
           IconButton(
             onPressed: ()=>Navigator.pushNamed(context, '/addT')
             .then((value){
@@ -34,23 +87,35 @@ class _TaskScreenState extends State<TaskScreen> {
                 
               });
             }), 
-            icon: Icon(Icons.task))
+            icon: Icon(Icons.task)
+          ),
         ],
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight), 
+          child: 
+          Padding(
+            padding: EdgeInsets.all(3.0),
+            child: txtFiltroT,
+          )
+        ),
       ),
-      body: ValueListenableBuilder(
+      body: 
+      ValueListenableBuilder(
         valueListenable:  GlobalValue.flagTarea,
         builder: (context, value, _) {
           return FutureBuilder(
-            future: agendaDB!.GETALLTASK(),
+            future: txtconFiltroT.text.isEmpty
+              ? agendaDB!.GETALLTASK()
+              : agendaDB!.FILTROTASK(txtconFiltroT.text),
             builder: (BuildContext contex, AsyncSnapshot<List<TaskModel>> snapshot){
               if (snapshot.hasData) {
                 return ListView.builder(
-                  itemCount: snapshot.data!.length,
+                  itemCount: tareas.length,
                   itemBuilder: (BuildContext context, int  index){
                     return CardTaskWidget(
-                      taskModel: snapshot.data![index],
-                      agendaDB: agendaDB
-                    );
+                            taskModel: tareas[index],
+                            agendaDB: agendaDB
+                          );
                   }
                 );
               } else {
@@ -67,4 +132,27 @@ class _TaskScreenState extends State<TaskScreen> {
       ),
     );
   }
+
+  Future<void> actEstado() async {
+    List<TaskModel> ptarea;
+    switch (estado) {
+      case 'Completadas':
+        ptarea = await agendaDB!.FEstTASK(1);
+        GlobalValue.flagTarea.value = !GlobalValue.flagTarea.value;
+        break;
+      case 'Pendientes':
+        ptarea = await agendaDB!.FEstTASK(0);
+        GlobalValue.flagTarea.value = !GlobalValue.flagTarea.value;
+        break;
+      default:
+        ptarea = await agendaDB!.GETALLTASK();
+        GlobalValue.flagTarea.value = !GlobalValue.flagTarea.value;
+    }
+
+    setState(() {
+      // Actualizar la lista de tareas
+      tareas = ptarea;
+    });
+  }
+
 }

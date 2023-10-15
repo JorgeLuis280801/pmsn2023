@@ -2,13 +2,15 @@ import 'dart:async';
 import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pmsn2023/models/carrera_model.dart';
+import 'package:pmsn2023/models/profes_model.dart';
 import 'package:pmsn2023/models/task_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 class AgendaDB {
   
   static final nameDB = 'AGENDADB';
-  static final versionDB = 1;
+  static final versionDB = 4;
 
   static Database? _database;
   
@@ -30,32 +32,33 @@ class AgendaDB {
 
   FutureOr<void> _createTables(Database db, int version) {
     
-    String query = '''CREATE TABLE tblCarrera(
+    String query1 = '''CREATE TABLE tblCarrera(
                         id_Carrera INTEGER primary key,
                         nom_Carrera VARCHAR(50)
-                      );
+                      );''';
 
-                      CREATE TABLE tblProfesor(
+    String query2 = '''CREATE TABLE tblProfesor(
                         id_Profe INTEGER primary key,
                         nom_Profe VARCHAR(50),
                         email VARCHAR(50),
-                        id_Carrea INTEGER,
+                        id_Carrera INTEGER,
                         FOREIGN KEY (id_Profe) REFERENCES tblCarrera(id_Carrera)
-                      );
-
-                      CREATE TABLE tblTareas(
+                       );''';
+    
+    String query3 = '''CREATE TABLE tblTareas(
                         id_Tarea INTEGER primary key,
                         nom_tarea VARCHAR(50),
                         fec_expiracion DATE,
-                        fec_Recordatorio DATE,
+                        fec_recordatorio DATE,
                         desc_tarea TEXT,
                         realizada INTEGER,
                         id_Profe INTEGER,
                         FOREIGN KEY (id_Profe) REFERENCES tblProfesor(id_Profe)
-                      );
-                      ''';
+                      );''';
 
-    db.execute(query);
+    db.execute(query1);
+    db.execute(query2);
+    db.execute(query3);
   }
 
   Future<int> INSERT(String tblName, Map<String,dynamic> data) async {
@@ -101,6 +104,24 @@ class AgendaDB {
 
   }
 
+  Future<int> DELETEProf(String tblName, int idProfe) async {
+    
+    var conexion = await database;
+    return conexion!.delete(tblName, 
+      where: 'id_Profe = ?',
+      whereArgs: [idProfe]);
+
+  }
+
+  Future<int> DELETECarr(String tblName, int idCarrera) async {
+    
+    var conexion = await database;
+    return conexion!.delete(tblName, 
+      where: 'id_Carrera = ?',
+      whereArgs: [idCarrera]);
+
+  }
+
   Future<List<TaskModel>> GETALLTASK() async{
 
     var conexion = await database;
@@ -108,6 +129,66 @@ class AgendaDB {
     var result = await conexion!.query('tblTareas');
 
     return result.map((task) => TaskModel.fromMap(task)).toList();
+
+  }
+
+  Future<List<TaskModel>> FILTROTASK(String NombreT) async{
+
+    var conexion = await database;
+    
+    var result = await conexion!.query('tblTareas', where: 'nom_tarea = ?', whereArgs: [NombreT]);
+
+    return result.map((task) => TaskModel.fromMap(task)).toList();
+
+  }
+
+  Future<List<TaskModel>> FEstTASK(int Estado) async{
+
+    var conexion = await database;
+    
+    var result = await conexion!.query('tblTareas', where: 'realizada = ?', whereArgs: [Estado]);
+
+    return result.map((task) => TaskModel.fromMap(task)).toList();
+
+  }
+
+  Future<List<ProfesModel>> GETALLPROFES() async{
+
+    var conexion = await database;
+    
+    var result = await conexion!.query('tblProfesor');
+
+    return result.map((profes) => ProfesModel.fromMap(profes)).toList();
+
+  } 
+
+  Future<List<ProfesModel>> FILTROPROFES(String NombreP) async{
+
+    var conexion = await database;
+    
+    var result = await conexion!.query('tblProfesor', where: 'nom_Profe = ?', whereArgs: [NombreP]);
+
+    return result.map((profes) => ProfesModel.fromMap(profes)).toList();
+
+  }
+
+  Future<List<CarreraModel>> GETALLCARRERAS() async{
+
+    var conexion = await database;
+    
+    var result = await conexion!.query('tblCarrera');
+
+    return result.map((carreras) => CarreraModel.fromMap(carreras)).toList();
+
+  } 
+
+  Future<List<CarreraModel>> FILTROCARRERAS(String NombreC) async{
+
+    var conexion = await database;
+    
+    var result = await conexion!.query('tblCarrera', where: 'nom_Carrera = ?', whereArgs: [NombreC]);
+
+    return result.map((carreras) => CarreraModel.fromMap(carreras)).toList();
 
   } 
 

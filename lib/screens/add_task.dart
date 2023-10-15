@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pmsn2023/assets/global_values.dart';
 import 'package:pmsn2023/database/agendadb.dart';
 import 'package:pmsn2023/models/task_model.dart';
@@ -14,15 +15,25 @@ class AddTask extends StatefulWidget {
 
 class _AddTaskState extends State<AddTask> {
 
-  String? dropDownValue = "Pendiente";
+  int? tareaHecha = 0;
+  int? profe = 1;
+
+  DateTime? fec_exp;
+  DateTime? fec_rec;
 
   TextEditingController txtConNomT = TextEditingController();
   TextEditingController txtConDescT = TextEditingController();
+  TextEditingController txtConFecExp = TextEditingController();
+  TextEditingController txtConFecRec = TextEditingController();
   
-  List<String> dropDownValues = [
-    'Pendiente',
-    'Realizando',
-    'Concluida'
+  List <int> tareahechavalues = [
+    0,
+    1
+  ];
+
+  List<int> profeValues = [
+    1,
+    2
   ];
 
   AgendaDB? agendaDB;
@@ -34,19 +45,27 @@ class _AddTaskState extends State<AddTask> {
 
     if (widget.taskModel != null) {
       
-      txtConNomT.text = widget.taskModel!.nom_Tarea!;
-      txtConDescT.text = widget.taskModel!.desc_tarea!; 
-
-      switch (widget.taskModel!.sta_Tarea) {
-        case 'R':
-          dropDownValue = "Realizando";
+      txtConNomT.text = widget.taskModel!.nom_tarea!;
+      txtConFecExp.text = widget.taskModel!.fec_expiracion!.toString();
+      txtConFecRec.text = widget.taskModel!.fec_recordatorio!.toString();
+      txtConDescT.text = widget.taskModel!.desc_tarea!;
+      
+      switch (widget.taskModel!.realizada) {
+        case 0:
+          tareaHecha = 0;
           break;
-        case 'C':
-          dropDownValue = "Concluida";
-          break;
-        case 'P':
-          dropDownValue = "Pendiente";
+        case 1:
+          tareaHecha = 1;
       }
+
+      switch (widget.taskModel!.id_Profe) {
+        case 1:
+          profe = 1;
+          break;
+        case 2:
+          profe = 2;
+      }
+      
     }
 
   }
@@ -62,6 +81,65 @@ class _AddTaskState extends State<AddTask> {
     controller: txtConNomT,
   );
 
+  final txtFecExp = TextField(
+    decoration: const InputDecoration(
+      icon: Icon(Icons.calendar_today),
+      label: Text('Fecha Expiracion'),
+      border: OutlineInputBorder()
+    ),
+    readOnly: true,
+    controller: txtConFecExp,
+    onTap: () async {
+      DateTime? FecExp = await showDatePicker(
+        context: context, 
+        initialDate: DateTime.now(), 
+        firstDate: DateTime.now(), 
+        lastDate: DateTime(2100),
+        cancelText: ''
+      );
+      if (FecExp != null) {
+        String FecExpF = DateFormat('yyyy-MM-dd').format(FecExp);
+        fec_exp = DateFormat('yyyy-MM-dd').parse(FecExpF);
+        setState(() {
+          txtConFecExp.text = FecExpF;
+        });
+      }else{
+        var snackbar = SnackBar(content: Text('No se ha elegido ninguna fecha!'));
+        ScaffoldMessenger.of(context).showSnackBar(snackbar);
+        Navigator.pop(context);
+      }
+    },
+  );
+
+  final txtFecRec = TextField(
+    decoration: const InputDecoration(
+      icon: Icon(Icons.calendar_today),
+      label: Text('Fecha Recordatorio'),
+      border: OutlineInputBorder()
+    ),
+    controller: txtConFecRec,
+    onTap: () async {
+      DateTime? FecRec = await showDatePicker(
+        context: context, 
+        initialDate: DateTime.now(), 
+        firstDate: DateTime.now(), 
+        lastDate: DateTime(2100),
+        cancelText: ''
+      );
+      if (FecRec != null) {        
+        String FecRecF = DateFormat('yyyy-MM-dd').format(FecRec);
+        fec_rec = DateFormat('yyyy-MM-dd').parse(FecRecF);
+        setState(() {
+          txtConFecRec.text = FecRecF;
+        });
+      }else{
+        var snackbar = SnackBar(content: Text('No se ha elegido ninguna fecha!'));
+        ScaffoldMessenger.of(context).showSnackBar(snackbar);
+        Navigator.pop(context);
+      }
+    },
+  );
+
   final txtDesc_Tarea = TextField(
     decoration: const InputDecoration(
       label: Text('Descripcion'),
@@ -72,13 +150,27 @@ class _AddTaskState extends State<AddTask> {
   );
 
   final DropdownButton ddSta_Tarea = DropdownButton(
-    value: dropDownValue,
-    items: dropDownValues.map((status) => DropdownMenuItem(
+    value: tareaHecha,
+    items: tareahechavalues.map((status) => DropdownMenuItem(
       value: status,
-      child: Text(status))
+      child: Text(status.toString()))
     ).toList(), 
     onChanged: (value){
-      dropDownValue = value;
+      tareaHecha = value;
+      setState(() {
+        
+      });
+    }
+  );
+
+  final DropdownButton ddProfes = DropdownButton(
+    value: profe,
+    items: profeValues.map((status) => DropdownMenuItem(
+      value: status,
+      child: Text(status.toString()))
+    ).toList(), 
+    onChanged: (value){
+      profe = value;
       setState(() {
         
       });
@@ -90,9 +182,11 @@ class _AddTaskState extends State<AddTask> {
       onPressed: (){
         if( widget.taskModel == null){
           agendaDB!.INSERT('tblTareas', {
-          'nom_Tarea' : txtConNomT.text,
-          'desc_Tarea' : txtConDescT.text,
-          'sta_Tarea' : dropDownValue!.substring(0,1)
+          'nom_tarea' : txtConNomT.text,
+          'fec_expiracion' : txtConFecExp.text,
+          'fec_recordatorio' : txtConFecRec.text,
+          'desc_tarea' : txtConDescT.text,
+          'realizada' : tareaHecha
         }).then((value){
           var msj = ( value > 0 ) ? 'Insercion exitosa' : 'Insercion fallida';
           var snackbar = SnackBar(content: Text(msj));
@@ -102,9 +196,11 @@ class _AddTaskState extends State<AddTask> {
         }else{
           AgendaDB()!.UPDATETar('tblTareas', {
             'id_Tarea' : widget.taskModel!.id_Tarea,
-            'nom_Tarea' : txtConNomT.text,
-            'desc_Tarea' : txtConDescT.text,
-            'sta_Tarea' : dropDownValue!.substring(0,1)
+            'nom_tarea' : txtConNomT.text,
+            'fec_expiracion' : txtConFecExp.text,
+            'fec_recordatorio' : txtConFecRec.text,
+            'desc_tarea' : txtConDescT.text,
+            'realizada' : tareaHecha
           }).then((value) {
             GlobalValue.flagTarea.value = !GlobalValue.flagTarea.value;
             var msj = ( value > 0 ) 
@@ -135,7 +231,13 @@ class _AddTaskState extends State<AddTask> {
             const SizedBox(height: 15.0),
             txtDesc_Tarea,
             const SizedBox(height: 15.0),
+            txtFecExp,
+            const SizedBox(height: 15.0),
+            txtFecRec,
+            const SizedBox(height: 15.0),
             ddSta_Tarea,
+            const SizedBox(height: 15.0),
+            ddProfes,
             const SizedBox(height: 15.0),
             btnGuardar
           ],

@@ -53,10 +53,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ListTile(
               leading: Image.network('https://cdn3.iconfinder.com/data/icons/circle-f1/512/F1_19-256.png'),
               trailing: Image.network('https://cutewallpaper.org/24/modern-arrow-png/download-red-arrow-free-png-transparent-image-and-clipart.png'),
-              title: Text('TaskScreen'),
-              subtitle: Text('BD de los pilotos'),
+              title: Text('Base de datos'),
+              subtitle: Text('Gestiona la BD'),
               onTap: () {
-                Navigator.pushNamed(context, '/prov');
+                Navigator.pushNamed(context, '/selectTbl');
               },
             ),
             ListTile(

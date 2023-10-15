@@ -1,19 +1,17 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:pmsn2023/assets/global_values.dart';
 import 'package:pmsn2023/database/agendadb.dart';
-import 'package:pmsn2023/models/task_model.dart';
-import 'package:pmsn2023/screens/add_task.dart';
+import 'package:pmsn2023/models/carrera_model.dart';
+import 'package:pmsn2023/screens/add_carrera.dart';
 
-class CardTaskWidget extends StatelessWidget {
-  CardTaskWidget(
-    {
-      super.key, required this.taskModel, this.agendaDB
-    }
-  );
+class CardCarreraWidget extends StatelessWidget {
+  CardCarreraWidget({
+    super.key,
+    required this.carreraModel,
+    this.agendaDB
+  });
 
-  TaskModel taskModel;
+  CarreraModel carreraModel;
   AgendaDB? agendaDB;
 
   @override
@@ -28,20 +26,8 @@ class CardTaskWidget extends StatelessWidget {
         children: [
           Column(
             children: [
-              Text(taskModel.nom_tarea!,
+              Text(carreraModel.nom_Carrera!,
               style: const TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 251, 127), fontSize: 16)),
-              Text(taskModel.fec_expiracion!,
-              style: const TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 251, 127), fontSize: 16)),
-              Text(taskModel.fec_recordatorio!,
-              style: const TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 251, 127), fontSize: 16)),
-              Text(taskModel.desc_tarea!,
-              style: const TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 251, 127), fontSize: 16)),
-              Checkbox(
-                value: taskModel.realizada == 0
-                  ? false
-                  : true, 
-                onChanged: (isHecho){}
-              )
             ],
           ),
           Expanded(child: Container()),
@@ -52,7 +38,7 @@ class CardTaskWidget extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: 
-                    (context) => AddTask(taskModel: taskModel,)
+                    (context) => AddCarrera(carreraModel: carreraModel,)
                   )
                 ),
                 child: Image.asset('assets/images/P2.jpg', height: 40)
@@ -64,14 +50,14 @@ class CardTaskWidget extends StatelessWidget {
                     builder: (context){
                       return AlertDialog(
                         title: const Text("Confirmacion de borrado!!"),
-                        content: const Text("Estas seguro de querer borrar esta tarea?"),
+                        content: const Text("Estas seguro de querer borrar esta carrera?"),
                         actions: [
                           TextButton(
                             onPressed: (){
-                              agendaDB!.DELETETar('tblTareas', taskModel.id_Tarea!)
+                              agendaDB!.DELETECarr('tblCarrera', carreraModel.id_Carrera!)
                               .then((value) {
                                 Navigator.pop(context);
-                                GlobalValue.flagTarea.value = !GlobalValue.flagTarea.value;
+                                GlobalValue.flagCarrera.value = !GlobalValue.flagCarrera.value;
                               });
                             }, 
                             child: const Text('Borrar',

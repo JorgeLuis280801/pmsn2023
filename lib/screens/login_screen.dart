@@ -11,12 +11,12 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   
   bool? Marcado = false;
+
+  final txtconUser = TextEditingController();
+  final txtconPass = TextEditingController();
   
   @override
   Widget build(BuildContext context) {
-
-    final txtconUser = TextEditingController();
-    final txtconPass = TextEditingController();
 
     final txtUser = TextField(
       controller: txtconUser,
