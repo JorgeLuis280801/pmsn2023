@@ -68,6 +68,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Navigator.pushNamed(context, '/popular');
               },
             ),
+            ListTile(
+              leading: Image.network('https://cdn2.iconfinder.com/data/icons/multimedia-circle/512/multimedia_calender-64.png'),
+              trailing: Image.network('https://cutewallpaper.org/24/modern-arrow-png/download-red-arrow-free-png-transparent-image-and-clipart.png'),
+              title: Text('Calendario'),
+              subtitle: Text('Calendario eventos'),
+              onTap: () {
+                Navigator.pushNamed(context, '/calendar');
+              },
+            ),
             DayNightSwitcher(
               isDarkModeEnabled: GlobalValue.flagTheme.value,
               onStateChanged: (isDarkModeEnabled) async {
