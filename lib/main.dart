@@ -10,9 +10,12 @@ import 'package:pmsn2023/screens/login_screen.dart';
 import 'package:pmsn2023/screens/product_detail.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pmsn2023/servicio_notif.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+
+  await initNotificaciones();
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 

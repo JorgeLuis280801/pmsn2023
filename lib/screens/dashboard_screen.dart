@@ -8,6 +8,7 @@ import 'package:lottie/lottie.dart';
 import 'package:pmsn2023/assets/global_values.dart';
 import 'package:pmsn2023/screens/login_screen.dart';
 import 'package:pmsn2023/screens/tarjetas.dart';
+import 'package:pmsn2023/servicio_notif.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -89,7 +90,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               color: Color.fromARGB(255, 139, 0, 0),
               child: const Text('Cerrar sesion',
                      style: TextStyle(color: Colors.white),),
-              onPressed: () async{
+              onPressed: () async {
+                //showNotificacion();
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 prefs.remove('Recuerdame');
                 prefs.remove('theme');
