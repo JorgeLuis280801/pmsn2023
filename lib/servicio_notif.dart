@@ -16,7 +16,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
   }
 
   Future<void> showNotificacion() async{
-    const AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails('channelId', 'channelName', importance: Importance.max);
+    const AndroidNotificationDetails androidNotificationDetails = 
+    AndroidNotificationDetails('channelId', 'channelName', importance: Importance.max);
 
     const NotificationDetails notificationDetails = NotificationDetails(
       android: androidNotificationDetails
