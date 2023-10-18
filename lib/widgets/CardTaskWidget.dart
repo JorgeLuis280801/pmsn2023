@@ -88,6 +88,7 @@ class CardTaskWidget extends StatelessWidget {
                   );
                 }, 
                 icon: const Icon(Icons.delete)
+                
               )
             ],
           )

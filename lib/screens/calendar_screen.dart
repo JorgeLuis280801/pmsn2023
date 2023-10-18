@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:pmsn2023/assets/global_values.dart';
+import 'package:pmsn2023/database/agendadb.dart';
 import 'package:pmsn2023/eventos.dart';
+import 'package:pmsn2023/models/task_model.dart';
+import 'package:pmsn2023/widgets/CardCalendarWidget.dart';
+import 'package:pmsn2023/widgets/CardTaskWidget.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarScreen extends StatefulWidget {
@@ -11,26 +17,44 @@ class CalendarScreen extends StatefulWidget {
 
 class _CalendarScreenState extends State<CalendarScreen> {
 
-  Map<DateTime, List<Eventos>> eventosSeleccionados = {};
+  Map<DateTime, List<TaskModel>> eventos = {};
+  List <TaskModel> listaTareas = [];
+  List <String> fechas = [];
   CalendarFormat format = CalendarFormat.month;
   DateTime DiaSeleccionado = DateTime.now();
   DateTime DiaElegido = DateTime.now();
 
-  TextEditingController txtconEventos = TextEditingController();
+  AgendaDB? agendaDB;
 
   @override
   void initState() {
     super.initState();
+
+    agendaDB = AgendaDB();
+
+    datosTarea();
   }
 
-  List<Eventos> ObtenerEventos(DateTime date) {
-    return eventosSeleccionados[date] ?? [];
+  Future<void> datosTarea() async{
+    listaTareas = await agendaDB!.GETALLTASK();
+    setState(() {
+      for (var tarea in listaTareas) {
+        final fechaTarea = DateTime.parse(tarea.fec_expiracion!);
+        if (eventos.containsKey(fechaTarea)) {
+          eventos[fechaTarea]!.add(tarea);
+        }else{
+          eventos[fechaTarea] = [tarea];
+          debugPrint('error?');
+        }
+      }
+    });
+    actualizar();
   }
 
-  @override
-  void dispose() {
-    txtconEventos.dispose();
-    super.dispose();
+  void actualizar(){
+    setState(() {
+      
+    });
   }
 
   @override
@@ -53,16 +77,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
             },
             startingDayOfWeek: StartingDayOfWeek.sunday,
             daysOfWeekVisible: true,
-            onDaySelected: (DateTime diaseleccionado, DateTime diaelegido) {
+            onDaySelected: (diaseleccionado, diaelegido) {
               setState(() {
                 DiaSeleccionado = diaseleccionado;
                 DiaElegido = diaelegido;
+                actualizar();
               });
             },
             selectedDayPredicate: (DateTime fecha) {
               return isSameDay(DiaSeleccionado, fecha);
             },
-            eventLoader: ObtenerEventos,
             calendarStyle: CalendarStyle(
               isTodayHighlighted: true,
               selectedDecoration: BoxDecoration(
@@ -93,18 +117,67 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 color: Colors.blue,
                 borderRadius: BorderRadius.circular(5.0),
               ),
-              formatButtonTextStyle: TextStyle(
+              formatButtonTextStyle: const TextStyle(
                 color: Colors.white,
               ),
             ),
-          ),
-          ...ObtenerEventos(DiaSeleccionado).map(
-            (Eventos evento) => ListTile(
-              title: Text(
-                evento.titulo,
-              ),
+            calendarBuilders: CalendarBuilders(
+              markerBuilder: (context, dia, evento){
+                List<Widget> puntos = [];
+                final formatoFecha = DateTime.parse(DateFormat('yyyy-MM-dd').format(dia));
+                final puntosEve = eventos[formatoFecha] ?? [];
+                puntos = puntosEve.map((valueEve) {
+                  return Container(
+                    width: 5,
+                    height: 5,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.red
+                    ),
+                  );
+                }).toList();
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: puntos
+                );
+              }
             ),
           ),
+          Expanded(
+            child: ValueListenableBuilder(
+              valueListenable: GlobalValue.flagTarea, 
+              builder: (context, value, _) {
+                return FutureBuilder(
+                  future: agendaDB!.FechaTarea(DiaSeleccionado.toString().substring(0,10)), 
+                  builder: (
+                    BuildContext context,
+                    AsyncSnapshot<List<TaskModel>> snapshot
+                  ) {
+                    if (snapshot.hasData) {
+                      listaTareas = snapshot.data!;
+                      return ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (BuildContext context, int index){
+                          return CardCalendarWidget(
+                            taskModel: snapshot.data![index],
+                            agendaDB: agendaDB,
+                          );
+                        }
+                      );
+                    } else{
+                      if (snapshot.hasError) {
+                        return const Center(
+                          child: Text('Se murio :v'),
+                        );
+                      }else{
+                        return const CircularProgressIndicator();
+                      }
+                    }
+                  }
+                );
+              }
+            )
+          )
         ],
       ),
     );

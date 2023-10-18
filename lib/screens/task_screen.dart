@@ -31,6 +31,7 @@ class _TaskScreenState extends State<TaskScreen> {
   void initState() {
     super.initState();
     agendaDB = AgendaDB();
+    initTareas();
   }
 
   @override
@@ -50,9 +51,12 @@ class _TaskScreenState extends State<TaskScreen> {
   );
 
   final btnFiltro = ElevatedButton(
-    onPressed: (){setState(() {
-      
-    });}, 
+    onPressed: (){
+      FiltroTareas(txtconFiltroT.text);
+      setState(() {
+        
+      });
+    }, 
     child: Text('Buscar'),
     style: ButtonStyle(
     backgroundColor: MaterialStateProperty.all<Color>(const Color.fromARGB(255, 30, 109, 174))
@@ -104,9 +108,7 @@ class _TaskScreenState extends State<TaskScreen> {
         valueListenable:  GlobalValue.flagTarea,
         builder: (context, value, _) {
           return FutureBuilder(
-            future: txtconFiltroT.text.isEmpty
-              ? agendaDB!.GETALLTASK()
-              : agendaDB!.FILTROTASK(txtconFiltroT.text),
+            future: agendaDB!.GETALLTASK(),
             builder: (BuildContext contex, AsyncSnapshot<List<TaskModel>> snapshot){
               if (snapshot.hasData) {
                 return ListView.builder(
@@ -148,6 +150,30 @@ class _TaskScreenState extends State<TaskScreen> {
         ptarea = await agendaDB!.GETALLTASK();
         GlobalValue.flagTarea.value = !GlobalValue.flagTarea.value;
     }
+
+    setState(() {
+      // Actualizar la lista de tareas
+      tareas = ptarea;
+    });
+  }
+
+  Future<void> initTareas() async {
+    List<TaskModel> ptarea;
+
+    ptarea = await agendaDB!.GETALLTASK();
+    GlobalValue.flagTarea.value = !GlobalValue.flagTarea.value;
+
+    setState(() {
+      // Actualizar la lista de tareas
+      tareas = ptarea;
+    });
+  }
+
+  Future<void> FiltroTareas(String filtro) async {
+    List<TaskModel> ptarea;
+
+    ptarea = await agendaDB!.FILTROTASK(filtro);
+    GlobalValue.flagTarea.value = !GlobalValue.flagTarea.value;
 
     setState(() {
       // Actualizar la lista de tareas

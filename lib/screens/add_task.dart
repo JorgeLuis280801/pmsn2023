@@ -55,6 +55,8 @@ class _AddTaskState extends State<AddTask> {
           tareaHecha = 1;
       }
 
+      profe = widget.taskModel!.id_Profe!;
+
       agendaDB!.GETPROFESID().then((clave) {
         setState(() {
           profeValues = clave;
@@ -187,7 +189,8 @@ class _AddTaskState extends State<AddTask> {
           'fec_expiracion' : txtConFecExp.text,
           'fec_recordatorio' : txtConFecRec.text,
           'desc_tarea' : txtConDescT.text,
-          'realizada' : tareaHecha
+          'realizada' : tareaHecha,
+          'id_Profe' : profe
         }).then((value){
           var msj = ( value > 0 ) ? 'Insercion exitosa' : 'Insercion fallida';
           var snackbar = SnackBar(content: Text(msj));
@@ -201,7 +204,8 @@ class _AddTaskState extends State<AddTask> {
             'fec_expiracion' : txtConFecExp.text,
             'fec_recordatorio' : txtConFecRec.text,
             'desc_tarea' : txtConDescT.text,
-            'realizada' : tareaHecha
+            'realizada' : tareaHecha,
+            'id_Profe' : profe
           }).then((value) {
             GlobalValue.flagTarea.value = !GlobalValue.flagTarea.value;
             var msj = ( value > 0 ) 

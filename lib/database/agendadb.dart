@@ -142,6 +142,16 @@ class AgendaDB {
 
   }
 
+  Future<List<TaskModel>> FechaTarea(String fecha) async{
+
+    var conexion = await database;
+    
+    var result = await conexion!.query('tblTareas', where: 'fec_expiracion = ?', whereArgs: [fecha]);
+
+    return result.map((task) => TaskModel.fromMap(task)).toList();
+
+  }
+
   Future<List<TaskModel>> FEstTASK(int Estado) async{
 
     var conexion = await database;
