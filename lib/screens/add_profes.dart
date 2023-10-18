@@ -14,15 +14,14 @@ class AddProfes extends StatefulWidget {
 
 class _AddProfesState extends State<AddProfes> {
 
-  int? Carreras = 1;
+  int? Carreras;
 
   TextEditingController txtConNomProfe = TextEditingController();
   TextEditingController txtConEmail = TextEditingController();
 
-  List <int> CarrerasValue = [
-    1,
-    2
-  ];
+  List <int> CarrerasValue = [];
+
+  List <String> CarrerasName = [];
 
   AgendaDB? agendaDB;
 
@@ -34,14 +33,19 @@ class _AddProfesState extends State<AddProfes> {
     if (widget.profesModel != null) {
       txtConNomProfe.text = widget.profesModel!.nom_Profe!;
       txtConEmail.text = widget.profesModel!.email!;
-      switch (widget.profesModel!.id_Carrera) {
-        case 1:
-          Carreras = 1;
-          break;
-        case 2:
-          Carreras = 2;
-      }
+      Carreras = widget.profesModel!.id_Carrera!;
+      agendaDB!.GETCARRERASID().then((clave){
+        setState(() {
+          CarrerasValue = clave;
+        });
+      });
     }
+
+    agendaDB!.GETCARRERASID().then((clave){
+        setState(() {
+          CarrerasValue = clave;
+        });
+      });
   }
 
   @override
@@ -63,12 +67,14 @@ class _AddProfesState extends State<AddProfes> {
       controller: txtConEmail,
     );
 
-    final DropdownButton ddCarrera = DropdownButton(
+    final DropdownButton ddCarrera = DropdownButton<int>(
       value: Carreras,
-      items: CarrerasValue.map((status) => DropdownMenuItem(
-        value: status,
-        child: Text(status.toString()))
-      ).toList(), 
+      items: CarrerasValue.map((id) {
+        return DropdownMenuItem<int>(
+          value: id,
+          child: Text('${CarrerasValue.toString()[id-1]} id: $id')
+        );
+      }).toList(), 
       onChanged: (value){
         Carreras = value;
         setState(() {

@@ -5,7 +5,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
   Future<void> initNotificaciones() async {
     
-  const AndroidInitializationSettings androidinitializationSettings = AndroidInitializationSettings('app_icon');
+  const AndroidInitializationSettings androidinitializationSettings = AndroidInitializationSettings('launch_background');
   
   const InitializationSettings initializationSettings = InitializationSettings(
       android: androidinitializationSettings
@@ -16,12 +16,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
   }
 
   Future<void> showNotificacion() async{
-    const AndroidNotificationDetails androidNotificationDetails = 
-    AndroidNotificationDetails('channelId', 'channelName', importance: Importance.max);
+    const AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails('channelId', 'channelName');
 
-    const NotificationDetails notificationDetails = NotificationDetails(
-      android: androidNotificationDetails
-    );
+    const NotificationDetails notificationDetails = NotificationDetails(android: androidNotificationDetails);
 
     await notificacion.show(
       1, 

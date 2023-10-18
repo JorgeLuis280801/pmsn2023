@@ -16,7 +16,7 @@ class AddTask extends StatefulWidget {
 class _AddTaskState extends State<AddTask> {
 
   int? tareaHecha = 0;
-  int? profe = 1;
+  int? profe;
 
   DateTime? fec_exp;
   DateTime? fec_rec;
@@ -31,10 +31,7 @@ class _AddTaskState extends State<AddTask> {
     1
   ];
 
-  List<int> profeValues = [
-    1,
-    2
-  ];
+  List<int> profeValues = [];
 
   AgendaDB? agendaDB;
   @override
@@ -58,15 +55,19 @@ class _AddTaskState extends State<AddTask> {
           tareaHecha = 1;
       }
 
-      switch (widget.taskModel!.id_Profe) {
-        case 1:
-          profe = 1;
-          break;
-        case 2:
-          profe = 2;
-      }
+      agendaDB!.GETPROFESID().then((clave) {
+        setState(() {
+          profeValues = clave;
+        });
+      });
       
     }
+
+    agendaDB!.GETPROFESID().then((clave) {
+        setState(() {
+          profeValues = clave;
+        });
+    });
 
   }
 
@@ -163,11 +164,11 @@ class _AddTaskState extends State<AddTask> {
     }
   );
 
-  final DropdownButton ddProfes = DropdownButton(
+  final DropdownButton ddProfes = DropdownButton<int>(
     value: profe,
-    items: profeValues.map((status) => DropdownMenuItem(
-      value: status,
-      child: Text(status.toString()))
+    items: profeValues.map((id) => DropdownMenuItem<int>(
+      value: id,
+      child: Text('${profeValues.toString()[id-1]} id: $id'))
     ).toList(), 
     onChanged: (value){
       profe = value;

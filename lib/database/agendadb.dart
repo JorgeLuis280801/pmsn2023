@@ -160,6 +160,16 @@ class AgendaDB {
 
     return result.map((profes) => ProfesModel.fromMap(profes)).toList();
 
+  }
+
+  Future<List<int>> GETPROFESID() async{
+
+    var conexion = await database;
+    
+    var result = await conexion!.query('tblProfesor', columns: ['id_Profe']);
+
+    return result.map<int>((map) => map['id_Profe'] as int).toList();
+
   } 
 
   Future<List<ProfesModel>> FILTROPROFES(String NombreP) async{
@@ -179,6 +189,16 @@ class AgendaDB {
     var result = await conexion!.query('tblCarrera');
 
     return result.map((carreras) => CarreraModel.fromMap(carreras)).toList();
+
+  }
+
+  Future<List<int>> GETCARRERASID() async{
+
+    var conexion = await database;
+    
+    var result = await conexion!.query('tblCarrera', columns: ['id_Carrera']);
+
+    return result.map<int>((map) => map['id_Carrera'] as int).toList();
 
   } 
 

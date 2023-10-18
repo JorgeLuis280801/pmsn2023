@@ -11,7 +11,7 @@ class CalendarScreen extends StatefulWidget {
 
 class _CalendarScreenState extends State<CalendarScreen> {
 
-  late Map<DateTime, List<Eventos>> eventosSeleccionados;
+  Map<DateTime, List<Eventos>> eventosSeleccionados = {};
   CalendarFormat format = CalendarFormat.month;
   DateTime DiaSeleccionado = DateTime.now();
   DateTime DiaElegido = DateTime.now();
@@ -20,7 +20,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   void initState() {
-    eventosSeleccionados = {};
     super.initState();
   }
 
@@ -107,48 +106,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text("Nombre evento"),
-            content: TextFormField(
-              controller: txtconEventos,
-            ),
-            actions: [
-              TextButton(
-                child: Text("Cancelar"),
-                onPressed: () => Navigator.pop(context),
-              ),
-              TextButton(
-                child: Text("Guardar"),
-                onPressed: () {
-                  if (txtconEventos.text.isEmpty) {
-
-                  } else {
-                    if (eventosSeleccionados[DiaSeleccionado] != null) {
-                      eventosSeleccionados[DiaSeleccionado]?.add(
-                        Eventos(titulo: txtconEventos.text),
-                      );
-                    } else {
-                      eventosSeleccionados[DiaSeleccionado] = [
-                        Eventos(titulo: txtconEventos.text)
-                      ];
-                    }
-
-                  }
-                  Navigator.pop(context);
-                  txtconEventos.clear();
-                  setState((){});
-                  return;
-                },
-              ),
-            ],
-          ),
-        ),
-        label: Text("Añadir eventos"),
-        icon: Icon(Icons.add),
       ),
     );
   }
