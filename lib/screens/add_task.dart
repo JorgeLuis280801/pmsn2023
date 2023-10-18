@@ -228,24 +228,27 @@ class _AddTaskState extends State<AddTask> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
-        child: Column(
-          //mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            const SizedBox(height: 8.0),
-            txtNom_Tarea,
-            const SizedBox(height: 15.0),
-            txtDesc_Tarea,
-            const SizedBox(height: 15.0),
-            txtFecExp,
-            const SizedBox(height: 15.0),
-            txtFecRec,
-            const SizedBox(height: 15.0),
-            ddSta_Tarea,
-            const SizedBox(height: 15.0),
-            ddProfes,
-            const SizedBox(height: 15.0),
-            btnGuardar
-          ],
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            //mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              const SizedBox(height: 8.0),
+              txtNom_Tarea,
+              const SizedBox(height: 15.0),
+              txtDesc_Tarea,
+              const SizedBox(height: 15.0),
+              txtFecExp,
+              const SizedBox(height: 15.0),
+              txtFecRec,
+              const SizedBox(height: 15.0),
+              ddSta_Tarea,
+              const SizedBox(height: 15.0),
+              ddProfes,
+              const SizedBox(height: 15.0),
+              btnGuardar
+            ],
+          ),
         ),
       ),
     );

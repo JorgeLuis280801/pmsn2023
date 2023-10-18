@@ -26,23 +26,26 @@ class CardTaskWidget extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Column(
-            children: [
-              Text(taskModel.nom_tarea!,
-              style: const TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 251, 127), fontSize: 16)),
-              Text(taskModel.fec_expiracion!,
-              style: const TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 251, 127), fontSize: 16)),
-              Text(taskModel.fec_recordatorio!,
-              style: const TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 251, 127), fontSize: 16)),
-              Text(taskModel.desc_tarea!,
-              style: const TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 251, 127), fontSize: 16)),
-              Checkbox(
-                value: taskModel.realizada == 0
-                  ? false
-                  : true, 
-                onChanged: (isHecho){}
-              )
-            ],
+          Expanded(
+            flex: 3,
+            child: Column(
+              children: [
+                Text(taskModel.nom_tarea!,
+                style: const TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 251, 127), fontSize: 16)),
+                Text(taskModel.fec_expiracion!,
+                style: const TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 251, 127), fontSize: 16)),
+                Text(taskModel.fec_recordatorio!,
+                style: const TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 251, 127), fontSize: 16)),
+                Text(taskModel.desc_tarea!,
+                style: const TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 251, 127), fontSize: 16)),
+                Checkbox(
+                  value: taskModel.realizada == 0
+                    ? false
+                    : true, 
+                  onChanged: (isHecho){}
+                )
+              ],
+            ),
           ),
           Expanded(child: Container()),
           Column(
