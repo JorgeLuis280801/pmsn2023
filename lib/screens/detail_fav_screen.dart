@@ -1,35 +1,30 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:pmsn2023/assets/global_values.dart';
+import 'package:pmsn2023/database/favoritesdb.dart';
+import 'package:pmsn2023/models/actor_model.dart';
+import 'package:pmsn2023/models/favorites_model.dart';
+import 'package:http/http.dart' as http;
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'dart:convert';
 import 'dart:ui';
 import 'package:intl/intl.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:pmsn2023/database/favoritesdb.dart';
-import 'package:pmsn2023/models/actor_model.dart';
-import 'package:pmsn2023/models/popular_model.dart';
-import 'package:http/http.dart' as http;
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-class DetailMovieScreen extends StatefulWidget {
-  const DetailMovieScreen({super.key});
+class DetailFavScreen extends StatefulWidget {
+  const DetailFavScreen({super.key});
 
   @override
-  State<DetailMovieScreen> createState() => _DetailMovieScreenState();
+  State<DetailFavScreen> createState() => _DetailFavScreenState();
 }
 
-class _DetailMovieScreenState extends State<DetailMovieScreen> {
-  
-  PopularModel? movie;
+class _DetailFavScreenState extends State<DetailFavScreen> {
+
   String? trailerUrl;
   ActorModel? actorModel;
   FavoritesDB? favoritesDB;
+  FavoriteModel? favoriteModel;
 
-  bool _isFavorited = false;
-
-    void _toggleFavorite() {
-      setState(() {
-        _isFavorited = !_isFavorited;
-      });
-    }
+  late YoutubePlayerController _playerController;
 
   @override
   void initState() {
@@ -37,12 +32,10 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
     favoritesDB = FavoritesDB();
   }
 
-  late YoutubePlayerController _playerController;
-
-  Future<String> fetchMovieTrailer(int movieId) async {
+  Future<String> fetchfavoriteModelTrailer(int favoriteModelId) async {
     final apiKey = 'b7246b6e44dee1713f99286903de41e0';
     final language = 'es-MX';
-    final url = Uri.parse('https://api.themoviedb.org/3/movie/$movieId/videos?api_key=$apiKey&language=$language');
+    final url = Uri.parse('https://api.themoviedb.org/3/movie/$favoriteModelId/videos?api_key=$apiKey&language=$language');
 
     final response = await http.get(url);
 
@@ -59,64 +52,69 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
     return '';
   }
 
-  Future<List<ActorModel>> fetchMovieActors(int movieId) async {
-  final apiKey = 'b7246b6e44dee1713f99286903de41e0'; // Reemplaza con tu clave de API de TMDb
-  final language = 'es-MX';
-  final url = Uri.parse('https://api.themoviedb.org/3/movie/$movieId/credits?api_key=$apiKey&language=$language');
+  Future<List<ActorModel>> fetchfavoriteModelActors(int favoriteModelId) async {
+    final apiKey = 'b7246b6e44dee1713f99286903de41e0'; // Reemplaza con tu clave de API de TMDb
+    final language = 'es-MX';
+    final url = Uri.parse('https://api.themoviedb.org/3/movie/$favoriteModelId/credits?api_key=$apiKey&language=$language');
 
-  final response = await http.get(url);
+    final response = await http.get(url);
 
-  if (response.statusCode == 200) {
-    final data = json.decode(response.body);
-    final cast = data['cast'] as List;
-    final filteredActors = cast
-        .where((actorData) => actorData['known_for_department'] == 'Acting')
-        .take(10) // Muestra solo los primeros 10 actores
-        .map((actorData) => ActorModel.fromJson(actorData))
-        .toList();
-    return filteredActors;
-  } else {
-    throw Exception('Failed to load movie credits');
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final cast = data['cast'] as List;
+      final filteredActors = cast
+          .where((actorData) => actorData['known_for_department'] == 'Acting')
+          .take(10) // Muestra solo los primeros 10 actores
+          .map((actorData) => ActorModel.fromJson(actorData))
+          .toList();
+      return filteredActors;
+    } else {
+      throw Exception('Failed to load movie credits');
+    }
   }
-}
-  
+
   @override
   Widget build(BuildContext context) {
-    
-    movie = ModalRoute.of(context)!.settings.arguments as PopularModel;
+    favoriteModel = ModalRoute.of(context)!.settings.arguments as FavoriteModel;
 
     final ElevatedButton btnFav = ElevatedButton(
       onPressed: (){
-        if (_isFavorited == false) {
-          favoritesDB!.INSERT('tblFavoritos', {
-          'clave_P' : movie!.id,
-          'titulo' : movie!.title,
-          'sinopsis' : movie!.overview,
-          'valoracion' : movie!.voteAverage,
-          'poster' : movie!.posterPath
-        }).then((value) {
-          var msj = ( value > 0 ) ? 'Añadida a tus favoritos' : 'Hubo un error :c';
-          var snackbar = SnackBar(content: Text(msj));
-          ScaffoldMessenger.of(context).showSnackBar(snackbar);
-          Navigator.pop(context);
-        });
-        _toggleFavorite();
-        }else{
-          _toggleFavorite();
-        }
+        showDialog(
+                    context: context, 
+                    builder: (context){
+                      return AlertDialog(
+                        title: const Text("Confirmacion de borrado!!"),
+                        content: const Text("Estas seguro de querer eliminar esta pelicula de tus favoritas?"),
+                        actions: [
+                          TextButton(
+                            onPressed: (){
+                              favoritesDB!.DELETEFav('tblFavoritos', favoriteModel!.clave_P!)
+                              .then((value) {
+                                Navigator.pop(context);
+                                GlobalValue.flagFavoritos.value = !GlobalValue.flagFavoritos.value;
+                              });
+                            }, 
+                            child: const Text('Borrar',
+                            style: TextStyle(color: Color.fromARGB(255, 255, 0, 0)))
+                          ),
+                          TextButton(
+                            onPressed: ()=>Navigator.pop(context), 
+                            child: const Text('Cancelar',
+                            style: TextStyle(color: Color.fromARGB(255, 3, 97, 17)),)
+                          ),
+                        ],
+                      );
+                    }
+                  );
       }, 
-      child: Row(
+      child: const Row(
         children: [
-          Icon(
-            _isFavorited ? Icons.favorite : Icons.favorite_border,
-            color: _isFavorited ? Colors.white : Colors.white,
-          ),
-          const Text('Añadir a favoritos', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+          Text('Eliminar de mis favoritos', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
         ],
       )
     );
 
-    fetchMovieTrailer(movie!.id!).then((key) {
+    fetchfavoriteModelTrailer(favoriteModel!.clave_P!).then((key) {
       setState(() {
         _playerController = YoutubePlayerController(
           initialVideoId: key,
@@ -156,7 +154,7 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
         );
       }
     } catch (e) {
-      reproductor = Text('Error al cargar la peli');
+      reproductor = Text('');
     }
 
     try {
@@ -166,7 +164,7 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
         child: Padding(
           padding: EdgeInsets.all(8),
           child: FutureBuilder<List<ActorModel>>(
-            future: fetchMovieActors(movie!.id!), 
+            future: fetchfavoriteModelActors(favoriteModel!.clave_P!), 
             builder: (context, snapshot) {
               final num_Actores = snapshot.data ?? [];
               if (num_Actores.length == 10) {
@@ -231,12 +229,12 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(movie!.title!),
+        title: Text(favoriteModel!.titulo!),
       ),
       body: Container(
         child: Stack(
           children: [
-            Image.network('https://image.tmdb.org/t/p/w500/${movie!.posterPath!}', 
+            Image.network('https://image.tmdb.org/t/p/w500/${favoriteModel!.poster!}', 
               fit: BoxFit.cover,
               width: double.infinity,
               height: double.infinity),
@@ -268,7 +266,7 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(movie!.overview!.toString(), style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
+                        child: Text(favoriteModel!.sinopsis!.toString(), style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
                       ),
                     ],
                   ),
@@ -291,7 +289,7 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
                         ),
                         const SizedBox(height: 8),
                         RatingBarIndicator(
-                            rating: movie!.voteAverage!,
+                            rating: favoriteModel!.valoracion!,
                             itemBuilder: (context, index) => const Icon(
                                 Icons.movie,
                                 color: Colors.amber,
@@ -300,7 +298,7 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
                             itemSize: 30.0,
                         ),
                         const SizedBox(height: 8),
-                        Text('${movie!.voteAverage!}/10', 
+                        Text('${favoriteModel!.valoracion!}/10', 
                         style: const TextStyle(
                           fontWeight: FontWeight.bold, 
                           color: Colors.black, 

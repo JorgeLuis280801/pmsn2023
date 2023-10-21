@@ -9,5 +9,7 @@ class GlobalValue {
   static ValueNotifier<bool> flagProfes = ValueNotifier<bool>(true);
 
   static ValueNotifier<bool> flagCarrera = ValueNotifier<bool>(true);
+
+  static ValueNotifier<bool> flagFavoritos = ValueNotifier<bool>(true);
   
 }

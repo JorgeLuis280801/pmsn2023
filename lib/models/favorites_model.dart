@@ -4,13 +4,15 @@ class FavoriteModel {
   String? titulo;
   String? sinopsis;
   double? valoracion;
+  String? poster;
 
   FavoriteModel({
     this.id_Pelicula, 
     this.clave_P,
     this.titulo, 
     this.sinopsis, 
-    this.valoracion
+    this.valoracion,
+    this.poster
   });
 
   factory FavoriteModel.fromMap(Map<String, dynamic> map){
@@ -22,6 +24,7 @@ class FavoriteModel {
       valoracion: (map['valoracion'] is int)
         ? (map['valoracion'] as int).toDouble()
         : map['valoracion'],
+      poster: map['poster'] 
     );
   }
 }

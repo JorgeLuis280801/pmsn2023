@@ -8,7 +8,7 @@ import 'package:sqflite/sqflite.dart';
 class FavoritesDB{
 
   static final nameDB = 'favoriteDB';
-  static final versionDB = 1;
+  static final versionDB = 2;
 
   static Database? _database;
 
@@ -35,7 +35,8 @@ class FavoritesDB{
                         clave_P INTEGER,
                         titulo VARCHAR(50),
                         sinopsis text,
-                        valoracion double
+                        valoracion double,
+                        poster text
                       );''';
 
     db.execute(query1);
@@ -48,7 +49,7 @@ class FavoritesDB{
 
   }
 
-  Future<List<FavoriteModel>> GETALLFAV(String s, Map<String, int?> map) async{
+  Future<List<FavoriteModel>> GETALLFAV() async{
     var conexion = await database;
     
     var result = await conexion!.query('tblFavoritos');

@@ -25,6 +25,16 @@ class _PopularScreenState extends State<PopularScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Popular Movies'),
+        actions: [
+          IconButton(
+            onPressed: ()=>Navigator.pushNamed(context, '/fav')
+            .then((value){
+              setState(() {
+                
+              });
+            }), 
+            icon: Icon(Icons.task)),
+        ],
       ),
       body: FutureBuilder(
         future: apiPopular!.getAllPopular(),

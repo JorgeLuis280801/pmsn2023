@@ -5,7 +5,9 @@ import 'package:pmsn2023/screens/add_task.dart';
 import 'package:pmsn2023/screens/calendar_screen.dart';
 import 'package:pmsn2023/screens/carrera_screen.dart';
 import 'package:pmsn2023/screens/dashboard_screen.dart';
+import 'package:pmsn2023/screens/detail_fav_screen.dart';
 import 'package:pmsn2023/screens/detail_movie_screen.dart';
+import 'package:pmsn2023/screens/favorite_screen.dart';
 import 'package:pmsn2023/screens/login_screen.dart';
 import 'package:pmsn2023/screens/popular_screen.dart';
 import 'package:pmsn2023/screens/product_detail.dart';
@@ -29,6 +31,8 @@ Map<String,WidgetBuilder> getRoutes(){
     '/carreras' : (BuildContext context) => CarreraScreen(),
     '/addC' : (BuildContext context) => AddCarrera(),
     '/selectTbl' : (BuildContext context) => SelectTabla(),
-    '/calendar' : (BuildContext context) => CalendarScreen()
+    '/calendar' : (BuildContext context) => CalendarScreen(),
+    '/fav' : (BuildContext context) => FavoriteScreen(),
+    '/dfav' : (BuildContext context) => DetailFavScreen()
   };
 }
