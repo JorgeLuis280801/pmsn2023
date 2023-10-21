@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:ui';
-
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:pmsn2023/database/favoritesdb.dart';
 import 'package:pmsn2023/models/actor_model.dart';
 import 'package:pmsn2023/models/popular_model.dart';
 import 'package:http/http.dart' as http;
@@ -20,6 +21,21 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
   PopularModel? movie;
   String? trailerUrl;
   ActorModel? actorModel;
+  FavoritesDB? favoritesDB;
+
+  bool _isFavorited = false;
+
+    void _toggleFavorite() {
+      setState(() {
+        _isFavorited = !_isFavorited;
+      });
+    }
+
+  @override
+  void initState() {
+    super.initState();
+    favoritesDB = FavoritesDB();
+  }
 
   late YoutubePlayerController _playerController;
 
@@ -69,12 +85,44 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
     
     movie = ModalRoute.of(context)!.settings.arguments as PopularModel;
 
+    final ElevatedButton btnFav = ElevatedButton(
+      onPressed: (){
+        if (_isFavorited == false) {
+          favoritesDB!.INSERT('tblFavoritos', {
+          'clave_P' : movie!.id,
+          'titulo' : movie!.title,
+          'sinopsis' : movie!.overview,
+          'valoracion' : movie!.voteAverage,
+        }).then((value) {
+          var msj = ( value > 0 ) ? 'Añadida a tus favoritos' : 'Hubo un error :c';
+          print(msj);
+          var snackbar = SnackBar(content: Text(msj));
+          ScaffoldMessenger.of(context).showSnackBar(snackbar);
+          Navigator.pop(context);
+        });
+        _toggleFavorite();
+        }else{
+          _toggleFavorite();
+        }
+      }, 
+      child: Row(
+        children: [
+          Icon(
+            _isFavorited ? Icons.favorite : Icons.favorite_border,
+            color: _isFavorited ? Colors.white : Colors.white,
+          ),
+          const Text('Añadir a favoritos', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+        ],
+      )
+    );
+
     fetchMovieTrailer(movie!.id!).then((key) {
       setState(() {
         _playerController = YoutubePlayerController(
           initialVideoId: key,
           flags: const YoutubePlayerFlags(
-            mute: true
+            mute: true,
+            autoPlay: false
           ),
         );
       });
@@ -303,7 +351,8 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
                       listaActores,
                     ],
                   ),
-                )
+                ),
+                btnFav
               ]
             )
           ],
