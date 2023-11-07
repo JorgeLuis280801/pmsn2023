@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:ui';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
   String? trailerUrl;
   ActorModel? actorModel;
   FavoritesDB? favoritesDB;
+  int? fav;
 
   bool _isFavorited = false;
 
@@ -83,7 +85,7 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
   @override
   Widget build(BuildContext context) {
     
-    movie = ModalRoute.of(context)!.settings.arguments as PopularModel;
+    movie = ModalRoute.of(context)!.settings.arguments as PopularModel; 
 
     final ElevatedButton btnFav = ElevatedButton(
       onPressed: (){

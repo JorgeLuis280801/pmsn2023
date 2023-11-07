@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:concentric_transition/concentric_transition.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:pmsn2023/assets/global_values.dart';
 import 'package:pmsn2023/assets/styles_app.dart';
@@ -15,7 +16,7 @@ import 'package:pmsn2023/servicio_notif.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
 
-  await initNotificaciones();
+  await Firebase.initializeApp();
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 

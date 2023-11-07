@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "671306779100",
+    "project_id": "pmsn2023-dbc78",
+    "storage_bucket": "pmsn2023-dbc78.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:671306779100:android:1068831d7199c53ab06719",
+        "android_client_info": {
+          "package_name": "com.example.pmsn2023"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfC_ahrxnRdcwqWrxU3gKk3SEPhzboxnM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

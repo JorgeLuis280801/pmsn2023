@@ -1,5 +1,7 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:async';
+import 'package:get/get.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pmsn2023/models/favorites_model.dart';
@@ -63,6 +65,21 @@ class FavoritesDB{
     return conexion!.delete(tblName, 
       where: 'clave_P = ?',
       whereArgs: [idPeli]);
+
+  }
+
+  Future<int> MovieExist(Int id_P) async{
+
+    var conexion = await database;
+    
+    var result = await conexion!.query('tblFavoritos', columns: ['clave_P'],where: 'clave_P = ?', whereArgs: [id_P]);
+
+    if (result.isNotEmpty) {
+      return result.first['clave_P'] as int;
+    }else{
+      return 0;
+    }
+
 
   }
 

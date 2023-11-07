@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pmsn2023/firebase/email_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,6 +15,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final txtconUser = TextEditingController();
   final txtconPass = TextEditingController();
+
+  final emailAuth = EmailAuth();
   
   @override
   Widget build(BuildContext context) {
@@ -59,11 +62,17 @@ class _LoginScreenState extends State<LoginScreen> {
     final btnEntrar = FloatingActionButton.extended(
       icon: const Icon(Icons.login),
       label: const Text('Entrar'),
-      onPressed: () async {
+      /*onPressed: () async {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setBool('Recuerdame', Marcado ?? false);
         Navigator.pushNamed(context, '/dash');
-      }
+      }*/
+      onPressed: () async {
+        bool res = await emailAuth.verifyUsr(email: txtconUser.text, pwdUser: txtconPass.text);
+        if (res) {
+          Navigator.pushNamed(context, '/dash');
+        }
+      },
       );
 
     return Scaffold(
@@ -116,6 +125,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     )
                   ],
                 ),
+              ),
+              TextButton(
+                onPressed: ()=>Navigator.pushNamed(context, '/reg'), 
+                child: Text("Registrase :D", style: TextStyle(fontSize: 30),)
               ),
             ],
           ),

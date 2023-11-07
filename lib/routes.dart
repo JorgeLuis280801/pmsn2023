@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:pmsn2023/screens/RegisterScreen.dart';
 import 'package:pmsn2023/screens/add_carrera.dart';
 import 'package:pmsn2023/screens/add_profes.dart';
 import 'package:pmsn2023/screens/add_task.dart';
@@ -33,6 +34,7 @@ Map<String,WidgetBuilder> getRoutes(){
     '/selectTbl' : (BuildContext context) => SelectTabla(),
     '/calendar' : (BuildContext context) => CalendarScreen(),
     '/fav' : (BuildContext context) => FavoriteScreen(),
-    '/dfav' : (BuildContext context) => DetailFavScreen()
+    '/dfav' : (BuildContext context) => DetailFavScreen(),
+    '/reg' : (BuildContext context) => RegisterScreen()
   };
 }
