@@ -68,18 +68,13 @@ class FavoritesDB{
 
   }
 
-  Future<int> MovieExist(Int id_P) async{
+  Future<bool> MovieExist(int id_P) async{
 
     var conexion = await database;
     
-    var result = await conexion!.query('tblFavoritos', columns: ['clave_P'],where: 'clave_P = ?', whereArgs: [id_P]);
+    var result = await conexion!.query('tblFavoritos', where: 'clave_P = ?', whereArgs: [id_P]);
 
-    if (result.isNotEmpty) {
-      return result.first['clave_P'] as int;
-    }else{
-      return 0;
-    }
-
+    return result.isNotEmpty;
 
   }
 

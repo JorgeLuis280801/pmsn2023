@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:pmsn2023/assets/global_values.dart';
 import 'package:pmsn2023/database/favoritesdb.dart';
 import 'package:pmsn2023/models/actor_model.dart';
 import 'package:pmsn2023/models/popular_model.dart';
@@ -24,19 +25,13 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
   ActorModel? actorModel;
   FavoritesDB? favoritesDB;
   int? fav;
-
-  bool _isFavorited = false;
-
-    void _toggleFavorite() {
-      setState(() {
-        _isFavorited = !_isFavorited;
-      });
-    }
+  bool? isFavorited;
 
   @override
   void initState() {
     super.initState();
     favoritesDB = FavoritesDB();
+    isFavorited = false;
   }
 
   late YoutubePlayerController _playerController;
@@ -89,7 +84,17 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
 
     final ElevatedButton btnFav = ElevatedButton(
       onPressed: (){
-        if (_isFavorited == false) {
+        favoritesDB!.MovieExist(movie!.id!).then((isFavorited){
+          if (isFavorited) {
+            favoritesDB!.DELETEFav('tblFavoritos', movie!.id!).then((value) {
+              GlobalValue.flagFavoritos.value = !GlobalValue.flagFavoritos.value;
+              var msj = ( value > 0 ) ? 'Borrada de favoritos' : 'Hubo un error :c';
+              var snackbar = SnackBar(content: Text(msj));
+              ScaffoldMessenger.of(context).showSnackBar(snackbar);
+            });
+          }
+        });
+        if (isFavorited == false) {
           favoritesDB!.INSERT('tblFavoritos', {
           'clave_P' : movie!.id,
           'titulo' : movie!.title,
@@ -100,21 +105,31 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
           var msj = ( value > 0 ) ? 'Añadida a tus favoritos' : 'Hubo un error :c';
           var snackbar = SnackBar(content: Text(msj));
           ScaffoldMessenger.of(context).showSnackBar(snackbar);
-          Navigator.pop(context);
         });
-        _toggleFavorite();
-        }else{
-          _toggleFavorite();
         }
       }, 
-      child: Row(
-        children: [
-          Icon(
-            _isFavorited ? Icons.favorite : Icons.favorite_border,
-            color: _isFavorited ? Colors.white : Colors.white,
-          ),
-          const Text('Añadir a favoritos', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-        ],
+      child: FutureBuilder<bool>(
+        future: favoritesDB!.MovieExist(movie!.id!), 
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Row(
+              children: [
+                Icon(
+                  snapshot.data! ? Icons.favorite : Icons.favorite_border,
+                ),
+                Text(
+                  snapshot.data! ? 'Eliminar de favoritos' : 'Añadir a favoritos', 
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
+                )
+              ],
+            );
+          }else{
+            return const Text(
+                  'Error :c', 
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
+                );
+          }
+        }
       )
     );
 
@@ -238,10 +253,13 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
       body: Container(
         child: Stack(
           children: [
-            Image.network('https://image.tmdb.org/t/p/w500/${movie!.posterPath!}', 
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity),
+            Hero(
+              tag: 'moviePoster_${movie!.id}',
+              child: Image.network('https://image.tmdb.org/t/p/w500/${movie!.posterPath!}', 
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity),
+            ),
             Container(
               width: double.infinity,
               height: double.infinity,

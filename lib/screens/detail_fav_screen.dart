@@ -23,6 +23,7 @@ class _DetailFavScreenState extends State<DetailFavScreen> {
   ActorModel? actorModel;
   FavoritesDB? favoritesDB;
   FavoriteModel? favoriteModel;
+  bool? isFavorited;
 
   late YoutubePlayerController _playerController;
 
@@ -30,6 +31,7 @@ class _DetailFavScreenState extends State<DetailFavScreen> {
   void initState() {
     super.initState();
     favoritesDB = FavoritesDB();
+    isFavorited = false;
   }
 
   Future<String> fetchfavoriteModelTrailer(int favoriteModelId) async {
@@ -79,38 +81,52 @@ class _DetailFavScreenState extends State<DetailFavScreen> {
 
     final ElevatedButton btnFav = ElevatedButton(
       onPressed: (){
-        showDialog(
-                    context: context, 
-                    builder: (context){
-                      return AlertDialog(
-                        title: const Text("Confirmacion de borrado!!"),
-                        content: const Text("Estas seguro de querer eliminar esta pelicula de tus favoritas?"),
-                        actions: [
-                          TextButton(
-                            onPressed: (){
-                              favoritesDB!.DELETEFav('tblFavoritos', favoriteModel!.clave_P!)
-                              .then((value) {
-                                Navigator.pop(context);
-                                GlobalValue.flagFavoritos.value = !GlobalValue.flagFavoritos.value;
-                              });
-                            }, 
-                            child: const Text('Borrar',
-                            style: TextStyle(color: Color.fromARGB(255, 255, 0, 0)))
-                          ),
-                          TextButton(
-                            onPressed: ()=>Navigator.pop(context), 
-                            child: const Text('Cancelar',
-                            style: TextStyle(color: Color.fromARGB(255, 3, 97, 17)),)
-                          ),
-                        ],
-                      );
-                    }
-                  );
+        favoritesDB!.MovieExist(favoriteModel!.clave_P!).then((isFavorited){
+          if (isFavorited) {
+            favoritesDB!.DELETEFav('tblFavoritos', favoriteModel!.clave_P!).then((value) {
+              GlobalValue.flagFavoritos.value = !GlobalValue.flagFavoritos.value;
+              var msj = ( value > 0 ) ? 'Borrada de favoritos' : 'Hubo un error :c';
+              var snackbar = SnackBar(content: Text(msj));
+              ScaffoldMessenger.of(context).showSnackBar(snackbar);
+            });
+          }
+        });
+        if (isFavorited == false) {
+          favoritesDB!.INSERT('tblFavoritos', {
+          'clave_P' : favoriteModel!.clave_P,
+          'titulo' : favoriteModel!.titulo,
+          'sinopsis' : favoriteModel!.sinopsis,
+          'valoracion' : favoriteModel!.valoracion,
+          'poster' : favoriteModel!.poster
+        }).then((value) {
+          var msj = ( value > 0 ) ? 'Añadida a tus favoritos' : 'Hubo un error :c';
+          var snackbar = SnackBar(content: Text(msj));
+          ScaffoldMessenger.of(context).showSnackBar(snackbar);
+        });
+        }
       }, 
-      child: const Row(
-        children: [
-          Text('Eliminar de mis favoritos', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-        ],
+      child: FutureBuilder<bool>(
+        future: favoritesDB!.MovieExist(favoriteModel!.clave_P!), 
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Row(
+              children: [
+                Icon(
+                  snapshot.data! ? Icons.favorite : Icons.favorite_border,
+                ),
+                Text(
+                  snapshot.data! ? 'Eliminar de favoritos' : 'Añadir a favoritos', 
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
+                )
+              ],
+            );
+          }else{
+            return const Text(
+                  'Error :c', 
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
+                );
+          }
+        }
       )
     );
 
@@ -234,10 +250,13 @@ class _DetailFavScreenState extends State<DetailFavScreen> {
       body: Container(
         child: Stack(
           children: [
-            Image.network('https://image.tmdb.org/t/p/w500/${favoriteModel!.poster!}', 
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity),
+            Hero(
+              tag: 'moviePoster_${favoriteModel!.clave_P}',
+              child: Image.network('https://image.tmdb.org/t/p/w500/${favoriteModel!.poster!}', 
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity),
+            ),
             Container(
               width: double.infinity,
               height: double.infinity,

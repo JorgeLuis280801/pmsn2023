@@ -68,6 +68,8 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushNamed(context, '/dash');
       }*/
       onPressed: () async {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool('Recuerdame', Marcado ?? false);
         bool res = await emailAuth.verifyUsr(email: txtconUser.text, pwdUser: txtconPass.text);
         if (res) {
           Navigator.pushNamed(context, '/dash');
