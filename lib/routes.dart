@@ -10,6 +10,8 @@ import 'package:pmsn2023/screens/detail_fav_screen.dart';
 import 'package:pmsn2023/screens/detail_movie_screen.dart';
 import 'package:pmsn2023/screens/favorite_screen.dart';
 import 'package:pmsn2023/screens/login_screen.dart';
+import 'package:pmsn2023/screens/maps_screem.dart';
+import 'package:pmsn2023/screens/pop_fire_screen.dart';
 import 'package:pmsn2023/screens/popular_screen.dart';
 import 'package:pmsn2023/screens/product_detail.dart';
 import 'package:pmsn2023/screens/profes_screen.dart';
@@ -35,6 +37,8 @@ Map<String,WidgetBuilder> getRoutes(){
     '/calendar' : (BuildContext context) => CalendarScreen(),
     '/fav' : (BuildContext context) => FavoriteScreen(),
     '/dfav' : (BuildContext context) => DetailFavScreen(),
-    '/reg' : (BuildContext context) => RegisterScreen()
+    '/reg' : (BuildContext context) => RegisterScreen(),
+    '/map' : (BuildContext context) => MapScreen(),
+    '/pf' : (BuildContext context) => Popular_Fire_Screen()
   };
 }

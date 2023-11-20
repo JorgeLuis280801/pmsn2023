@@ -75,7 +75,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               title: Text('Calendario'),
               subtitle: Text('Calendario eventos'),
               onTap: () {
-                Navigator.pushNamed(context, '/calendar');
+                Navigator.pushNamed(context, '/pf');
               },
             ),
             DayNightSwitcher(

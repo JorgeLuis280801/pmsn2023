@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
         return ChangeNotifierProvider(
           create: (context) => TestProvider(),
           child: MaterialApp(
-            initialRoute: remember ? '/dash' : '/login',
+            initialRoute: (remember ? '/dash' : '/login') ?? '/login',
             routes: getRoutes(),
             theme: value ? StylesApp.dark_theme(context) : StylesApp.light_theme(context)
           ),
@@ -58,40 +58,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-/*class MyApp extends StatefulWidget {
-  MyApp({super.key, this.x});
-  int? x;
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-int Contador = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return  MaterialApp(
-      title: 'Material App',
-      home: Scaffold(
-        body: Center(
-          child: Text('Contador clicks $Contador', 
-           style: TextStyle(fontSize: 30),
-           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(
-            Icons.mouse,
-            color: Colors.red,
-          ),
-          onPressed: (){
-            Contador++;
-            print(Contador);
-            setState(() {});
-          }
-          ),
-      ),
-    );
-  }
-}*/
